@@ -5,6 +5,9 @@
   font-synthesis: none;
   font-weight: 400;
 }
+html[lang="hi"] body {
+  font-family: "Noto Sans Devanagari", "Mangal", "IBM Plex Sans", sans-serif;
+}
 .language-selector {
   display: inline-flex;
   align-items: center;

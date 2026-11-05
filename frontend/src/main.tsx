@@ -25,6 +25,7 @@ import {
 import type { TableColumnsType } from "antd";
 import esES from "antd/locale/es_ES";
 import enUS from "antd/locale/en_US";
+import hiIN from "antd/locale/hi_IN";
 import { useTranslation } from "react-i18next";
 import "./i18n";
 import { api, errorKey } from "./api";
@@ -56,6 +57,7 @@ import {
 import JsonView from "@uiw/react-json-view";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
+import "dayjs/locale/hi";
 import "@fontsource/ibm-plex-sans/400.css";
 import "@fontsource/ibm-plex-sans/500.css";
 import "@fontsource/ibm-plex-sans/600.css";
@@ -92,7 +94,7 @@ const Logo = () => (
 
 function LanguageSwitcher() {
   const { t, i18n } = useTranslation();
-  const language = i18n.resolvedLanguage === "en" ? "en" : "es";
+  const language = i18n.resolvedLanguage || "es";
   return (
     <div
       className="language-selector"
@@ -120,6 +122,16 @@ function LanguageSwitcher() {
       >
         EN
       </Button>
+      <Button
+        size="small"
+        type={language === "hi" ? "primary" : "default"}
+        aria-label={t("common.hindi")}
+        aria-pressed={language === "hi"}
+        title={t("common.hindi")}
+        onClick={() => void i18n.changeLanguage("hi")}
+      >
+        HI
+      </Button>
     </div>
   );
 }
@@ -138,12 +150,14 @@ function EventsApp() {
             ? "events"
             : "dashboard";
   const { t, i18n } = useTranslation();
-  const language = i18n.resolvedLanguage === "en" ? "en" : "es";
+  const language = i18n.resolvedLanguage || "es";
+  const numberLocale =
+    language === "en" ? "en-US" : language === "hi" ? "hi-IN" : "es-PE";
   const size = (bytes: number) =>
     bytes < 1024
       ? `${bytes} B`
-      : `${new Intl.NumberFormat(language === "en" ? "en-US" : "es-PE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(bytes / 1024)} KB`;
-  const number = new Intl.NumberFormat(language === "en" ? "en-US" : "es-PE");
+      : `${new Intl.NumberFormat(numberLocale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(bytes / 1024)} KB`;
+  const number = new Intl.NumberFormat(numberLocale);
   const date = (
     value: string | null,
     options: Intl.DateTimeFormatOptions = {
@@ -156,7 +170,7 @@ function EventsApp() {
     },
   ) =>
     value
-      ? new Intl.DateTimeFormat(language === "en" ? "en-US" : "es-PE", {
+      ? new Intl.DateTimeFormat(numberLocale, {
           timeZone: "America/Lima",
           hour12: false,
           ...options,
@@ -1162,8 +1176,8 @@ function EventsApp() {
 function LocalizedApp() {
   const { pathname } = useLocation();
   const { t, i18n } = useTranslation();
-  const language = i18n.resolvedLanguage === "en" ? "en" : "es";
-  dayjs.locale(language);
+  const language = i18n.resolvedLanguage || "es";
+  dayjs.locale(language === "hi" ? "hi" : language);
   useEffect(() => {
     document.documentElement.lang = language;
     const page =
@@ -1180,7 +1194,7 @@ function LocalizedApp() {
   }, [language, t, pathname]);
   return (
     <ConfigProvider
-      locale={language === "en" ? enUS : esES}
+      locale={language === "en" ? enUS : language === "hi" ? hiIN : esES}
       theme={{
         token: {
           colorPrimary: "#136b9a",

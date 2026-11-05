@@ -26,6 +26,7 @@ import JsonForm from "@rjsf/antd";
 import { customizeValidator } from "@rjsf/validator-ajv8";
 import type { RJSFSchema, UiSchema, WidgetProps } from "@rjsf/utils";
 import localizeEs from "ajv-i18n/localize/es";
+import localizeHi from "./localizeHi";
 import JsonView from "@uiw/react-json-view";
 import { useTranslation } from "react-i18next";
 import { api, errorKey } from "./api";
@@ -200,7 +201,7 @@ export function Integration({
   onExpired: () => void;
 }) {
   const { t, i18n } = useTranslation();
-  const language = i18n.resolvedLanguage === "en" ? "en" : "es";
+  const language = i18n.resolvedLanguage || "es";
   const { modal } = App.useApp();
   const [catalog, setCatalog] = useState<Catalog | null>(null),
     [selected, setSelected] = useState(""),
@@ -292,7 +293,15 @@ export function Integration({
       setSelected(remaining[Math.min(index, remaining.length - 1)] || "");
   }
   const validator = useMemo(
-    () => customizeValidator({}, language === "es" ? localizeEs : undefined),
+    () =>
+      customizeValidator(
+        {},
+        language === "es"
+          ? localizeEs
+          : language === "hi"
+            ? localizeHi
+            : undefined,
+      ),
     [language],
   );
   function localizeSchema(input: RJSFSchema, name = ""): RJSFSchema {
@@ -761,7 +770,11 @@ export function Integration({
                           dataIndex: "created_at",
                           render: (value) =>
                             new Intl.DateTimeFormat(
-                              language === "en" ? "en-US" : "es-PE",
+                              language === "en"
+                                ? "en-US"
+                                : language === "hi"
+                                  ? "hi-IN"
+                                  : "es-PE",
                               {
                                 dateStyle: "short",
                                 timeStyle: "medium",
