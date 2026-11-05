@@ -28,7 +28,6 @@ import {
   ApiOutlined,
   ArrowRightOutlined,
   CheckCircleOutlined,
-  ClockCircleOutlined,
   CloudServerOutlined,
   CodeOutlined,
   CopyOutlined,
@@ -86,6 +85,7 @@ const date = (
   value
     ? new Intl.DateTimeFormat("es-PE", {
         timeZone: "America/Lima",
+        hour12: false,
         ...options,
       }).format(new Date(value))
     : "Sin eventos";
@@ -719,7 +719,7 @@ function EventsApp() {
                 total: data.total,
                 showSizeChanger: true,
                 pageSizeOptions: [10, 25, 50, 100],
-                showTotal: (total) => `${number.format(total)} eventos`,
+                showTotal: (total) => `${number.format(total)} ${total === 1 ? "evento" : "eventos"}`,
                 onChange: (p, s) => {
                   setPage(s !== pageSize ? 1 : p);
                   setPageSize(s);
