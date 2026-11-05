@@ -8,7 +8,6 @@ import {
   Input,
   Modal,
   Popconfirm,
-  Select,
   Space,
   Switch,
   Table,
@@ -461,29 +460,28 @@ export function UserManagement({
                 : "users.profileHint",
             )}
           >
-            <Select
+            <select
+              className="user-profile-select"
               disabled={editing?.id === account.id}
-              getPopupContainer={(trigger) =>
-                (trigger.closest(".ant-modal") as HTMLElement | null) ??
-                document.body
+              onChange={(event) =>
+                form.setFieldValue(
+                  "permissions",
+                  profiles.find(
+                    (profile) => profile.id === event.target.value,
+                  )?.permissions ?? [],
+                )
               }
-              options={profiles.map((profile) => ({
-                value: profile.id,
-                label:
-                  profile.id === "custom"
+            >
+              {profiles.map((profile) => (
+                <option key={profile.id} value={profile.id}>
+                  {profile.id === "custom"
                     ? t("users.individualPermissions")
                     : profile.is_system
                       ? t(`roles.${profile.id}`)
-                      : profile.name,
-              }))}
-              onChange={(value) =>
-                form.setFieldValue(
-                  "permissions",
-                  profiles.find((profile) => profile.id === value)
-                    ?.permissions ?? [],
-                )
-              }
-            />
+                      : profile.name}
+                </option>
+              ))}
+            </select>
           </Form.Item>
           <Form.Item
             name="permissions"
