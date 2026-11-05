@@ -22,6 +22,8 @@
   "common.retry": "Reintentar",
   "common.close": "Cerrar",
   "common.language": "Idioma",
+  "common.spanish": "Español",
+  "common.english": "Inglés",
   "nav.workspace": "Espacio de trabajo",
   "nav.events": "Eventos",
   "nav.source": "Origen de eventos",

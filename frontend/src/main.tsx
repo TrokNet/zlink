@@ -91,18 +91,31 @@ const Logo = () => (
 
 function LanguageSwitcher() {
   const { t, i18n } = useTranslation();
+  const language = i18n.resolvedLanguage === "en" ? "en" : "es";
   return (
-    <Select
-      className="language-selector"
-      aria-label={t("common.language")}
-      prefix={<GlobalOutlined aria-hidden="true" />}
-      value={i18n.resolvedLanguage === "en" ? "en" : "es"}
-      onChange={(value) => void i18n.changeLanguage(value)}
-      options={[
-        { value: "es", label: "Español" },
-        { value: "en", label: "English" },
-      ]}
-    />
+    <div className="language-selector" role="group" aria-label={t("common.language")}>
+      <GlobalOutlined aria-hidden="true" />
+      <Button
+        size="small"
+        type={language === "es" ? "primary" : "default"}
+        aria-label={t("common.spanish")}
+        aria-pressed={language === "es"}
+        title={t("common.spanish")}
+        onClick={() => void i18n.changeLanguage("es")}
+      >
+        ES
+      </Button>
+      <Button
+        size="small"
+        type={language === "en" ? "primary" : "default"}
+        aria-label={t("common.english")}
+        aria-pressed={language === "en"}
+        title={t("common.english")}
+        onClick={() => void i18n.changeLanguage("en")}
+      >
+        EN
+      </Button>
+    </div>
   );
 }
 

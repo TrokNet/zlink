@@ -6,7 +6,14 @@
   font-weight: 400;
 }
 .language-selector {
-  min-width: 126px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+.language-selector .ant-btn {
+  min-width: 38px;
+  padding-inline: 8px;
 }
 .dashboard-grid {
   display: grid;
@@ -219,9 +226,6 @@
   right: 28px;
 }
 @media (max-width: 550px) {
-  .language-selector {
-    min-width: 112px;
-  }
   .account {
     gap: 7px;
   }
