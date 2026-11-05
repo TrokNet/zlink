@@ -463,6 +463,10 @@ export function UserManagement({
           >
             <Select
               disabled={editing?.id === account.id}
+              getPopupContainer={(trigger) =>
+                (trigger.closest(".ant-modal") as HTMLElement | null) ??
+                document.body
+              }
               options={profiles.map((profile) => ({
                 value: profile.id,
                 label:
