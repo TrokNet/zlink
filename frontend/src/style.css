@@ -315,7 +315,7 @@ a:focus-visible {
   background: #22455e;
   box-shadow: inset 3px 0 #71cdf4;
 }
-.sidebar nav a > span:last-child {
+.sidebar nav a > .nav-count {
   margin-left: auto;
   font-size: 11px;
   background: #385a70;

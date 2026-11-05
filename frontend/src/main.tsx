@@ -237,7 +237,12 @@ function EventsApp() {
     ])
       .then(([rows, stats]) => {
         if (sequence.current !== id) return;
-        if (view === "events" && page > 1 && rows.items.length === 0 && rows.total > 0) {
+        if (
+          view === "events" &&
+          page > 1 &&
+          rows.items.length === 0 &&
+          rows.total > 0
+        ) {
           setPage(Math.ceil(rows.total / pageSize));
           return;
         }
@@ -556,7 +561,8 @@ function EventsApp() {
               className={view === "events" ? "nav-active" : ""}
             >
               <ThunderboltOutlined />
-              {t("nav.events")} <span>{number.format(summary.total)}</span>
+              {t("nav.events")}{" "}
+              <span className="nav-count">{number.format(summary.total)}</span>
             </a>
           )}
           {user.permissions.includes("users.manage") && (
@@ -1106,13 +1112,14 @@ function EventsApp() {
 }
 
 function LocalizedApp() {
+  const { pathname } = useLocation();
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage === "en" ? "en" : "es";
   dayjs.locale(language);
   useEffect(() => {
     document.documentElement.lang = language;
-    document.title = `ZLINK · ${t("nav.events")}`;
-  }, [language, t]);
+    document.title = `ZLINK · ${t(pathname === "/users" ? "nav.users" : pathname === "/integration" ? "nav.api" : pathname === "/events" ? "nav.events" : "nav.dashboard")}`;
+  }, [language, t, pathname]);
   return (
     <ConfigProvider
       locale={language === "en" ? enUS : esES}

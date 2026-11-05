@@ -6,6 +6,7 @@ import {
   Collapse,
   Empty,
   Input,
+  InputNumber,
   Modal,
   Select,
   Space,
@@ -45,6 +46,30 @@ type Operation = {
 type Guide = { id: string; title: string; sections: string[]; source: string };
 type Catalog = { operations: Operation[]; guides: Guide[]; articles: number };
 type Result = { http_status: number; duration_ms: number; body: unknown };
+
+function NumericInput(props: WidgetProps) {
+  return (
+    <InputNumber
+      id={props.id}
+      aria-label={props.label}
+      controls={false}
+      style={{ width: "100%" }}
+      value={props.value ?? null}
+      min={
+        typeof props.schema.minimum === "number"
+          ? props.schema.minimum
+          : undefined
+      }
+      max={
+        typeof props.schema.maximum === "number"
+          ? props.schema.maximum
+          : undefined
+      }
+      onChange={(value) => props.onChange(value ?? undefined)}
+      disabled={props.disabled || props.readonly}
+    />
+  );
+}
 
 function Base64Image(props: WidgetProps) {
   const { t } = useTranslation(),
@@ -157,6 +182,8 @@ export function Integration({
     for (const [key, value] of Object.entries(schema.properties || {})) {
       if (typeof value === "object") {
         ui[key] = makeUi(value);
+        if (value.type === "integer" || value.type === "number")
+          ui[key] = { "ui:widget": "numberInput" };
         if (["content", "bioPhoto"].includes(key))
           ui[key] = { "ui:widget": "base64" };
         if (
@@ -365,7 +392,10 @@ export function Integration({
                         schema={localizeSchema(operation.schema)}
                         uiSchema={makeUi(operation.schema)}
                         validator={validator}
-                        widgets={{ base64: Base64Image }}
+                        widgets={{
+                          base64: Base64Image,
+                          numberInput: NumericInput,
+                        }}
                         formData={inputs}
                         onChange={(event) => setInputs(event.formData || {})}
                         onSubmit={(event) => void execute(event.formData || {})}
