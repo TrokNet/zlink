@@ -349,6 +349,8 @@
   "operations.8a88857b9ca17652019cdc5988d20012": "Lista de eventos",
   "sections.Authentication and Authorization": "Autenticación y autorización",
   "sections.Organization": "Organización",
+  "sections.Departments": "Departamentos",
+  "sections.People": "Personas",
   "sections.Credentials": "Credenciales",
   "sections.Access Control": "Control de acceso",
   "sections.Time Attendance": "Asistencia",

@@ -6,7 +6,7 @@
       "id": "8a8883949a54d914019a8025d155008b",
       "title": "Create Department",
       "sections": [
-        "Organization",
+        "Departments",
         "Department"
       ],
       "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff43bcb003e/8a8883949a54d914019a8025d155008b",
@@ -106,7 +106,7 @@
       "id": "8a8883949a54d914019a802609ab008e",
       "title": "Delete Department",
       "sections": [
-        "Organization",
+        "Departments",
         "Department"
       ],
       "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff43bcb003e/8a8883949a54d914019a802609ab008e",
@@ -157,7 +157,7 @@
       "id": "8a8883949a54d914019a80265d070091",
       "title": "Update Full Department Information",
       "sections": [
-        "Organization",
+        "Departments",
         "Department"
       ],
       "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff43bcb003e/8a8883949a54d914019a80265d070091",
@@ -269,7 +269,7 @@
       "id": "8a8883949a54d914019a8026a4140094",
       "title": "Get Department Details",
       "sections": [
-        "Organization",
+        "Departments",
         "Department"
       ],
       "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff43bcb003e/8a8883949a54d914019a8026a4140094",
@@ -320,7 +320,7 @@
       "id": "8a8883949a54d914019a8026e9900097",
       "title": "Query Department Information Enabled (Paginated)",
       "sections": [
-        "Organization",
+        "Departments",
         "Department"
       ],
       "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff43bcb003e/8a8883949a54d914019a8026e9900097",
@@ -431,7 +431,7 @@
       "id": "8a8883949a54d914019a80276628009a",
       "title": "Create Person",
       "sections": [
-        "Organization",
+        "People",
         "Person"
       ],
       "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff4798d0042/8a8883949a54d914019a80276628009a",
@@ -586,7 +586,7 @@
       "id": "8a8883949a54d914019a8027cb01009d",
       "title": "Delete Person",
       "sections": [
-        "Organization",
+        "People",
         "Person"
       ],
       "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff4798d0042/8a8883949a54d914019a8027cb01009d",
@@ -637,7 +637,7 @@
       "id": "8a8883949a54d914019a8027feb200a0",
       "title": "Resign Person",
       "sections": [
-        "Organization",
+        "People",
         "Person"
       ],
       "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff4798d0042/8a8883949a54d914019a8027feb200a0",
@@ -725,7 +725,7 @@
       "id": "8a8883949a54d914019a8029189a00a3",
       "title": "Update Full Person Information",
       "sections": [
-        "Organization",
+        "People",
         "Person"
       ],
       "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff4798d0042/8a8883949a54d914019a8029189a00a3",
@@ -892,7 +892,7 @@
       "id": "8a8883949a54d914019a80295aad00a6",
       "title": "Get Person Details",
       "sections": [
-        "Organization",
+        "People",
         "Person"
       ],
       "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff4798d0042/8a8883949a54d914019a80295aad00a6",
@@ -943,7 +943,7 @@
       "id": "8a8883949a54d914019a8029c1f400a9",
       "title": "Query Person Information (Paginated)",
       "sections": [
-        "Organization",
+        "People",
         "Person"
       ],
       "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff4798d0042/8a8883949a54d914019a8029c1f400a9",
