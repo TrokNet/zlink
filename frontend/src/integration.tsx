@@ -8,7 +8,6 @@ import {
   Input,
   InputNumber,
   Modal,
-  Select,
   Space,
   Table,
   Tag,
@@ -46,6 +45,43 @@ type Operation = {
 type Guide = { id: string; title: string; sections: string[]; source: string };
 type Catalog = { operations: Operation[]; guides: Guide[]; articles: number };
 type Result = { http_status: number; duration_ms: number; body: unknown };
+type WorkspaceTab = "request" | "response" | "history" | "guides";
+type RequestWorkspace = {
+  inputs: Record<string, unknown>;
+  result: Result | null;
+  error: string;
+  busy: boolean;
+  tab: WorkspaceTab;
+  history: Record<string, unknown>[];
+};
+
+function emptyWorkspace(): RequestWorkspace {
+  return {
+    inputs: {},
+    result: null,
+    error: "",
+    busy: false,
+    tab: "request",
+    history: [],
+  };
+}
+
+function methodColor(method: string) {
+  switch (method.toUpperCase()) {
+    case "GET":
+      return "blue";
+    case "POST":
+      return "green";
+    case "PUT":
+      return "gold";
+    case "PATCH":
+      return "purple";
+    case "DELETE":
+      return "red";
+    default:
+      return "default";
+  }
+}
 
 function NumericInput(props: WidgetProps) {
   return (
@@ -71,9 +107,7 @@ function NumericInput(props: WidgetProps) {
   );
 }
 
-function Base64Image(
-  props: WidgetProps & { includeMimeType?: boolean },
-) {
+function Base64Image(props: WidgetProps & { includeMimeType?: boolean }) {
   const { t } = useTranslation(),
     { message } = App.useApp();
   const includeMimeType = props.includeMimeType === true;
@@ -170,14 +204,13 @@ export function Integration({
   const { modal } = App.useApp();
   const [catalog, setCatalog] = useState<Catalog | null>(null),
     [selected, setSelected] = useState(""),
+    [openRequests, setOpenRequests] = useState<string[]>([]),
+    [workspaces, setWorkspaces] = useState<Record<string, RequestWorkspace>>(
+      {},
+    ),
     [search, setSearch] = useState(""),
-    [group, setGroup] = useState<string | undefined>(),
-    [inputs, setInputs] = useState<Record<string, unknown>>({}),
-    [result, setResult] = useState<Result | null>(null),
-    [error, setError] = useState(""),
-    [busy, setBusy] = useState(false),
-    [tab, setTab] = useState("request"),
-    [history, setHistory] = useState<Record<string, unknown>[]>([]),
+    [expandedGroups, setExpandedGroups] = useState<string[]>([]),
+    [catalogError, setCatalogError] = useState(""),
     [configured, setConfigured] = useState(false);
   const label = (op: Operation | Guide) =>
     t("operations." + op.id, { defaultValue: op.title });
@@ -191,22 +224,73 @@ export function Integration({
         if (active) {
           setCatalog(c);
           setConfigured(s.configured);
-          setSelected(
-            c.operations.find((x) => x.kind === "connection")?.id ||
-              c.operations[0]?.id ||
-              "",
-          );
+          const initialOperation =
+            c.operations.find((x) => x.kind === "connection") ||
+            c.operations[0];
+          if (initialOperation) {
+            setSelected(initialOperation.id);
+            setOpenRequests([initialOperation.id]);
+            setWorkspaces({ [initialOperation.id]: emptyWorkspace() });
+          }
+          setExpandedGroups([
+            ...new Set(c.operations.map((operation) => operation.sections[0])),
+          ]);
         }
       })
       .catch((e) => {
         if (e.status === 401) onExpired();
-        else if (active) setError(errorKey(e));
+        else if (active) setCatalogError(errorKey(e));
       });
     return () => {
       active = false;
     };
   }, [onExpired]);
   const operation = catalog?.operations.find((item) => item.id === selected);
+  const workspace = workspaces[selected] ?? emptyWorkspace();
+  const openOperations =
+    catalog?.operations.filter((item) => openRequests.includes(item.id)) || [];
+  function updateWorkspace(
+    id: string,
+    update:
+      | Partial<RequestWorkspace>
+      | ((current: RequestWorkspace) => RequestWorkspace),
+  ) {
+    setWorkspaces((current) => {
+      const previous = current[id] ?? emptyWorkspace();
+      const next =
+        typeof update === "function"
+          ? update(previous)
+          : { ...previous, ...update };
+      return { ...current, [id]: next };
+    });
+  }
+  function choose(id: string) {
+    setOpenRequests((current) =>
+      current.includes(id) ? current : [...current, id],
+    );
+    setWorkspaces((current) =>
+      current[id] ? current : { ...current, [id]: emptyWorkspace() },
+    );
+    setSelected(id);
+    const section = catalog?.operations.find((item) => item.id === id)
+      ?.sections[0];
+    if (section)
+      setExpandedGroups((current) =>
+        current.includes(section) ? current : [...current, section],
+      );
+  }
+  function closeRequest(id: string) {
+    const index = openRequests.indexOf(id);
+    const remaining = openRequests.filter((requestId) => requestId !== id);
+    setOpenRequests(remaining);
+    setWorkspaces((current) => {
+      const next = { ...current };
+      delete next[id];
+      return next;
+    });
+    if (selected === id)
+      setSelected(remaining[Math.min(index, remaining.length - 1)] || "");
+  }
   const validator = useMemo(
     () => customizeValidator({}, language === "es" ? localizeEs : undefined),
     [language],
@@ -249,60 +333,62 @@ export function Integration({
     }
     return ui;
   }
-  async function refreshHistory() {
+  async function refreshHistory(operationId: string) {
     try {
-      setHistory(
-        (
-          await api<{ items: Record<string, unknown>[] }>(
-            "/integration/history",
-          )
-        ).items,
+      const { items } = await api<{ items: Record<string, unknown>[] }>(
+        "/integration/history",
       );
+      updateWorkspace(operationId, { history: items });
     } catch (e) {
       if ((e as { status?: number }).status === 401) onExpired();
     }
   }
-  async function execute(data: Record<string, unknown>, confirmed = false) {
-    if (!operation) return;
-    const normalizedData = normalizeImageInput(operation, data);
+  async function execute(
+    requestOperation: Operation,
+    data: Record<string, unknown>,
+    confirmed = false,
+  ) {
+    const normalizedData = normalizeImageInput(requestOperation, data);
     if (!normalizedData) {
-      setError("api.imageMimeRequired");
+      updateWorkspace(requestOperation.id, { error: "api.imageMimeRequired" });
       return;
     }
-    if (operation.kind === "mutation" && !confirmed) {
+    if (requestOperation.kind === "mutation" && !confirmed) {
       modal.confirm({
         title: t("api.confirmTitle"),
-        content: t("api.confirmBody", { name: label(operation) }),
+        content: t("api.confirmBody", { name: label(requestOperation) }),
         okText: t("api.confirmExecute"),
         cancelText: t("common.cancel"),
         okButtonProps: { danger: true },
-        onOk: () => execute(normalizedData, true),
+        onOk: () => execute(requestOperation, normalizedData, true),
       });
       return;
     }
-    setBusy(true);
-    setError("");
-    setResult(null);
+    updateWorkspace(requestOperation.id, {
+      busy: true,
+      error: "",
+      result: null,
+    });
     try {
-      const r = await api<Result>(`/integration/execute/${operation.id}`, {
-        method: "POST",
-        body: JSON.stringify({ inputs: normalizedData, confirmed }),
-      });
-      setResult(r);
-      await refreshHistory();
+      const r = await api<Result>(
+        `/integration/execute/${requestOperation.id}`,
+        {
+          method: "POST",
+          body: JSON.stringify({ inputs: normalizedData, confirmed }),
+        },
+      );
+      updateWorkspace(requestOperation.id, { result: r, tab: "response" });
+      await refreshHistory(requestOperation.id);
     } catch (e) {
       if ((e as { status?: number }).status === 401) onExpired();
-      else setError(errorKey(e));
+      else
+        updateWorkspace(requestOperation.id, {
+          error: errorKey(e),
+          tab: "response",
+        });
     } finally {
-      setBusy(false);
+      updateWorkspace(requestOperation.id, { busy: false });
     }
-  }
-  function choose(id: string) {
-    setSelected(id);
-    setInputs({});
-    setResult(null);
-    setError("");
-    setTab("request");
   }
   const canExecute =
     operation &&
@@ -310,13 +396,19 @@ export function Integration({
       operation.kind === "mutation" ? "api.write" : "api.read",
     );
   const filtered =
-    catalog?.operations.filter(
-      (op) =>
-        (!group || op.sections[0] === group) &&
-        `${label(op)} ${op.path} ${op.method}`
-          .toLowerCase()
-          .includes(search.toLowerCase()),
+    catalog?.operations.filter((op) =>
+      `${label(op)} ${op.path} ${op.method}`
+        .toLowerCase()
+        .includes(search.toLowerCase()),
     ) || [];
+  const groupedOperations = new Map<string, Operation[]>();
+  for (const item of filtered) {
+    const section = item.sections[0] || "Other";
+    groupedOperations.set(section, [
+      ...(groupedOperations.get(section) || []),
+      item,
+    ]);
+  }
   const connection = catalog?.operations.find((op) => op.kind === "connection");
   return (
     <>
@@ -335,14 +427,9 @@ export function Integration({
         </div>
         <Button
           icon={<CheckCircleOutlined />}
-          loading={busy}
+          loading={workspace.busy && operation?.kind === "connection"}
           disabled={!connection || !account.permissions.includes("api.read")}
-          onClick={() => {
-            if (connection) {
-              choose(connection.id);
-              setSelected(connection.id);
-            }
-          }}
+          onClick={() => connection && choose(connection.id)}
         >
           {t("api.connection")}
         </Button>
@@ -353,6 +440,14 @@ export function Integration({
         title={t(configured ? "api.configured" : "api.notConfigured")}
         className="data-error"
       />
+      {catalogError && (
+        <Alert
+          type="error"
+          showIcon
+          title={t(catalogError)}
+          className="data-error"
+        />
+      )}
       <div className="api-layout">
         <aside className="event-panel api-navigation">
           <div className="api-search">
@@ -362,52 +457,70 @@ export function Integration({
               value={search}
               onChange={(event) => setSearch(event.target.value)}
             />
-            <Select
-              allowClear
-              placeholder={t("api.allGroups")}
-              aria-label={t("api.allGroups")}
-              value={group}
-              onChange={setGroup}
-              options={[
-                ...new Set(catalog?.operations.map((op) => op.sections[0])),
-              ].map((value) => ({
-                value,
-                label: t("sections." + value, { defaultValue: value }),
-              }))}
-            />
           </div>
-          <div className="operation-list">
-            {filtered.map((op) => (
-              <button
-                key={op.id}
-                className={selected === op.id ? "selected" : ""}
-                onClick={() => choose(op.id)}
-              >
-                <span>
-                  <Tag color={op.kind === "mutation" ? "orange" : "blue"}>
-                    {op.method}
-                  </Tag>
-                  <span className="cell-muted">
-                    {t("sections." + op.sections[0], {
-                      defaultValue: op.sections[0],
-                    })}
+          <Collapse
+            className="operation-groups"
+            ghost
+            activeKey={expandedGroups}
+            onChange={(keys) =>
+              setExpandedGroups(Array.isArray(keys) ? keys : [keys])
+            }
+            items={[...groupedOperations.entries()].map(([section, items]) => ({
+              key: section,
+              label: (
+                <span className="operation-group-label">
+                  <span>
+                    {t("sections." + section, { defaultValue: section })}
                   </span>
+                  <Tag>{items.length}</Tag>
                 </span>
-                <strong>{label(op)}</strong>
-              </button>
-            ))}
-          </div>
+              ),
+              children: items.map((item) => (
+                <button
+                  key={item.id}
+                  className={`operation-entry${selected === item.id ? " selected" : ""}`}
+                  onClick={() => choose(item.id)}
+                  aria-current={selected === item.id ? "page" : undefined}
+                >
+                  <span className="operation-entry-meta">
+                    <Tag color={methodColor(item.method)}>{item.method}</Tag>
+                  </span>
+                  <strong>{label(item)}</strong>
+                  <code>{item.path}</code>
+                </button>
+              )),
+            }))}
+          />
         </aside>
         <section className="event-panel api-workbench">
+          <Tabs
+            className="api-request-tabs"
+            type="editable-card"
+            hideAdd
+            activeKey={selected || undefined}
+            onChange={choose}
+            onEdit={(targetKey, action) => {
+              if (action === "remove" && typeof targetKey === "string")
+                closeRequest(targetKey);
+            }}
+            items={openOperations.map((item) => ({
+              key: item.id,
+              label: (
+                <span className="api-request-tab-label">
+                  <Tag color={methodColor(item.method)}>{item.method}</Tag>
+                  <span>{label(item)}</span>
+                </span>
+              ),
+              children: null,
+            }))}
+          />
           {operation ? (
             <>
               <div className="panel-title">
                 <div>
                   <h2>{label(operation)}</h2>
                   <p>
-                    <Tag
-                      color={operation.kind === "mutation" ? "orange" : "blue"}
-                    >
+                    <Tag color={methodColor(operation.method)}>
                       {operation.method}
                     </Tag>
                     <code>{operation.path}</code>
@@ -419,10 +532,12 @@ export function Integration({
               </div>
               <div className="api-workbench-body">
                 <Tabs
-                  activeKey={tab}
+                  activeKey={workspace.tab}
                   onChange={(value) => {
-                    setTab(value);
-                    if (value === "history") void refreshHistory();
+                    updateWorkspace(operation.id, {
+                      tab: value as WorkspaceTab,
+                    });
+                    if (value === "history") void refreshHistory(operation.id);
                   }}
                   items={[
                     { key: "request", label: t("api.request") },
@@ -431,7 +546,7 @@ export function Integration({
                     { key: "guides", label: t("api.guides") },
                   ]}
                 />
-                {tab === "request" && (
+                {workspace.tab === "request" && (
                   <>
                     {operation.kind === "mutation" && (
                       <Alert
@@ -461,9 +576,15 @@ export function Integration({
                           ),
                           numberInput: NumericInput,
                         }}
-                        formData={inputs}
-                        onChange={(event) => setInputs(event.formData || {})}
-                        onSubmit={(event) => void execute(event.formData || {})}
+                        formData={workspace.inputs}
+                        onChange={(event) =>
+                          updateWorkspace(operation.id, {
+                            inputs: event.formData || {},
+                          })
+                        }
+                        onSubmit={(event) =>
+                          void execute(operation, event.formData || {})
+                        }
                         noHtml5Validate
                         showErrorList="top"
                         translateString={(id, params) => {
@@ -481,7 +602,7 @@ export function Integration({
                           type="primary"
                           htmlType="submit"
                           icon={<PlayCircleOutlined />}
-                          loading={busy}
+                          loading={workspace.busy}
                           disabled={!canExecute}
                         >
                           {t("api.execute")}
@@ -491,9 +612,9 @@ export function Integration({
                     {operation.kind === "connection" && (
                       <Button
                         type="primary"
-                        loading={busy}
+                        loading={workspace.busy}
                         disabled={!canExecute}
-                        onClick={() => void execute({})}
+                        onClick={() => void execute(operation, {})}
                         icon={<PlayCircleOutlined />}
                       >
                         {t("api.execute")}
@@ -502,10 +623,13 @@ export function Integration({
                     <Space wrap className="api-form-actions">
                       {operation.example !== null && (
                         <Button
-                          disabled={busy}
+                          disabled={workspace.busy}
                           onClick={() => {
-                            setInputs({ body: operation.example });
-                            setResult(null);
+                            updateWorkspace(operation.id, {
+                              inputs: { body: operation.example },
+                              result: null,
+                              error: "",
+                            });
                           }}
                         >
                           {t("api.example")}
@@ -513,11 +637,13 @@ export function Integration({
                       )}
                       <Button
                         onClick={() => {
-                          setInputs({});
-                          setResult(null);
-                          setError("");
+                          updateWorkspace(operation.id, {
+                            inputs: {},
+                            result: null,
+                            error: "",
+                          });
                         }}
-                        disabled={busy}
+                        disabled={workspace.busy}
                       >
                         {t("api.clear")}
                       </Button>
@@ -541,54 +667,70 @@ export function Integration({
                     />
                   </>
                 )}
-                {error && (
+                {workspace.error && (
                   <Alert
                     type="error"
                     showIcon
-                    title={t(error)}
+                    title={t(workspace.error)}
                     className="data-error"
                   />
                 )}
-                {(tab === "response" || tab === "request") && result && (
-                  <div className="api-result">
-                    <div className="result-header">
-                      <Tag
-                        color={result.http_status < 400 ? "success" : "error"}
-                      >
-                        HTTP {result.http_status}
-                      </Tag>
-                      <span>{result.duration_ms} ms</span>
-                      <Button
-                        onClick={() => {
-                          const blob = new Blob(
-                              [JSON.stringify(result.body, null, 2)],
-                              { type: "application/json" },
-                            ),
-                            url = URL.createObjectURL(blob),
-                            a = document.createElement("a");
-                          a.href = url;
-                          a.download = "zlink-response.json";
-                          a.click();
-                          URL.revokeObjectURL(url);
-                        }}
-                      >
-                        {t("api.download")}
-                      </Button>
+                {(workspace.tab === "response" ||
+                  workspace.tab === "request") &&
+                  workspace.result && (
+                    <div className="api-result">
+                      <div className="result-header">
+                        <Tag
+                          color={
+                            workspace.result.http_status < 400
+                              ? "success"
+                              : "error"
+                          }
+                        >
+                          HTTP {workspace.result.http_status}
+                        </Tag>
+                        <span>{workspace.result.duration_ms} ms</span>
+                        <Button
+                          onClick={() => {
+                            const blob = new Blob(
+                                [
+                                  JSON.stringify(
+                                    workspace.result?.body,
+                                    null,
+                                    2,
+                                  ),
+                                ],
+                                { type: "application/json" },
+                              ),
+                              url = URL.createObjectURL(blob),
+                              a = document.createElement("a");
+                            a.href = url;
+                            a.download = "zlink-response.json";
+                            a.click();
+                            URL.revokeObjectURL(url);
+                          }}
+                        >
+                          {t("api.download")}
+                        </Button>
+                      </div>
+                      <pre className="raw-json">
+                        {JSON.stringify(workspace.result.body, null, 2)}
+                      </pre>
                     </div>
-                    <pre className="raw-json">
-                      {JSON.stringify(result.body, null, 2)}
-                    </pre>
-                  </div>
-                )}
-                {tab === "response" && !result && !error && (
-                  <Empty description={t("api.noResponse")} />
-                )}{" "}
-                {tab === "history" && (
+                  )}
+                {workspace.tab === "response" &&
+                  !workspace.result &&
+                  !workspace.error && (
+                    <Empty description={t("api.noResponse")} />
+                  )}{" "}
+                {workspace.tab === "history" && (
                   <>
                     <p className="cell-muted">{t("api.historyHint")}</p>
                     <Table
                       rowKey="id"
-                      dataSource={history}
+                      dataSource={workspace.history.filter(
+                        (item) => item.operation_id === operation.id,
+                      )}
                       pagination={{ pageSize: 10 }}
                       scroll={{ x: 600 }}
                       columns={[
@@ -631,7 +773,7 @@ export function Integration({
                     />
                   </>
                 )}
-                {tab === "guides" && (
+                {workspace.tab === "guides" && (
                   <div className="guide-list">
                     {catalog?.guides.map((guide) => (
                       <a
