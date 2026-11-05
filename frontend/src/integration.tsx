@@ -71,10 +71,12 @@ function NumericInput(props: WidgetProps) {
   );
 }
 
-function Base64Image(props: WidgetProps) {
+function Base64Image(
+  props: WidgetProps & { includeMimeType?: boolean },
+) {
   const { t } = useTranslation(),
     { message } = App.useApp();
-  const includeMimeType = props.options?.includeMimeType === true;
+  const includeMimeType = props.includeMimeType === true;
   return (
     <div>
       <Upload
@@ -227,7 +229,7 @@ export function Integration({
       out.items = localizeSchema(input.items);
     return out;
   }
-  function makeUi(schema: RJSFSchema, includeMimeType = false): UiSchema {
+  function makeUi(schema: RJSFSchema): UiSchema {
     const ui: UiSchema = { "ui:submitButtonOptions": { norender: true } };
     for (const [key, value] of Object.entries(schema.properties || {})) {
       if (typeof value === "object") {
@@ -235,17 +237,14 @@ export function Integration({
         if (value.type === "integer" || value.type === "number")
           ui[key] = { "ui:widget": "numberInput" };
         if (["content", "bioPhoto"].includes(key))
-          ui[key] = {
-            "ui:widget": "base64",
-            "ui:options": { includeMimeType },
-          };
+          ui[key] = { "ui:widget": "base64" };
         if (
           value.type === "array" &&
           value.items &&
           typeof value.items === "object" &&
           !Array.isArray(value.items)
         )
-          ui[key].items = makeUi(value.items, includeMimeType);
+          ui[key].items = makeUi(value.items);
       }
     }
     return ui;
@@ -448,14 +447,18 @@ export function Integration({
                       <JsonForm
                         key={operation.id + "-" + language}
                         schema={localizeSchema(operation.schema)}
-                        uiSchema={makeUi(
-                          operation.schema,
-                          operation.path ===
-                            "/open-apis/cms/v1/credentials/visibleLightFace",
-                        )}
+                        uiSchema={makeUi(operation.schema)}
                         validator={validator}
                         widgets={{
-                          base64: Base64Image,
+                          base64: (props) => (
+                            <Base64Image
+                              {...props}
+                              includeMimeType={
+                                operation.path ===
+                                "/open-apis/cms/v1/credentials/visibleLightFace"
+                              }
+                            />
+                          ),
                           numberInput: NumericInput,
                         }}
                         formData={inputs}
