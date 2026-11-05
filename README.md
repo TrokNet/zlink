@@ -2,6 +2,10 @@
 
 Receptor de callbacks de ZKBio Zlink con FastAPI y una bandeja de eventos SQLite.
 
+Incluye un [visor privado de eventos](docs/event-viewer.md) en `/events`, construido
+con React y Ant Design: búsqueda, filtros, paginación, actualización automática
+y detalle JSON. La raíz redirige a ese visor.
+
 ## Desarrollo
 
 Requiere Python 3.10 o superior.
@@ -98,8 +102,8 @@ entorno. No se registran los cuerpos ni los secretos en los logs.
 El POST requiere `requestId`, `eventCode` y `encryptData`. El payload descifrado
 debe ser JSON. La tabla `events` conserva el identificador, código, contenido
 cifrado, JSON descifrado y fecha UTC. Un índice único por `requestId` evita
-duplicados, incluso en entregas concurrentes. No hay un endpoint público de
-consulta. Los eventos se conservan hasta que se defina una política de retención;
+duplicados, incluso en entregas concurrentes. Las consultas del visor requieren
+una sesión autenticada. Los eventos se conservan hasta definir una política de retención;
 incluir `.local/` en las copias de seguridad privadas del servidor.
 
 Se limita cada callback a 1 MiB. Las firmas inválidas y los timestamps fuera de

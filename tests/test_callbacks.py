@@ -145,7 +145,8 @@ class CallbackTests(unittest.TestCase):
     def test_existing_routes_and_no_public_event_listing(self):
         self.assertEqual(self.client.get("/health").json(), {"status": "ok"})
         self.assertEqual(self.client.get("/docs").status_code, 200)
-        self.assertEqual(self.client.get("/events").status_code, 404)
+        # Event data is never available without viewer authentication.
+        self.assertNotEqual(self.client.get("/api/events").status_code, 200)
 
 
 if __name__ == "__main__":

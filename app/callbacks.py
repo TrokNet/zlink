@@ -103,6 +103,8 @@ def initialize_database(settings: Settings) -> None:
                 received_at TEXT NOT NULL
             )"""
         )
+        connection.execute("CREATE INDEX IF NOT EXISTS events_received_at_idx ON events(received_at DESC, request_id)")
+        connection.execute("CREATE INDEX IF NOT EXISTS events_code_received_idx ON events(event_code, received_at DESC)")
     if os.name == "posix":
         settings.database_path.chmod(0o600)
 

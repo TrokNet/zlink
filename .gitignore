@@ -7,3 +7,5 @@ __pycache__/
 .pytest_cache/
 *.log
 .local/
+node_modules/
+frontend/dist/
