@@ -5,18 +5,29 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
+    "test": "node --test tests/*.test.mjs",
     "build": "tsc --noEmit && vite build"
   },
   "dependencies": {
     "@ant-design/icons": "6.3.4",
     "@fontsource/ibm-plex-sans": "5.3.0",
+    "@rjsf/antd": "6.11.1",
+    "@rjsf/core": "6.11.1",
+    "@rjsf/utils": "6.11.1",
+    "@rjsf/validator-ajv8": "6.11.1",
     "@uiw/react-json-view": "2.0.0-alpha.44",
+    "ajv-i18n": "4.2.0",
     "antd": "6.7.0",
     "dayjs": "1.11.23",
+    "i18next": "26.7.2",
+    "i18next-browser-languagedetector": "8.3.0",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "react-i18next": "17.1.13",
+    "react-router-dom": "7.18.5"
   },
   "devDependencies": {
+    "@babel/parser": "8.1.0",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "prettier": "3.9.10",

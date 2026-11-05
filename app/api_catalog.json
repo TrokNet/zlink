@@ -1,0 +1,3173 @@
+{
+  "source": "https://zlink-open.minervaiot.com/external/document",
+  "articles": 52,
+  "operations": [
+    {
+      "id": "8a8883949a54d914019a8025d155008b",
+      "title": "Create Department",
+      "sections": [
+        "Organization",
+        "Department"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff43bcb003e/8a8883949a54d914019a8025d155008b",
+      "method": "POST",
+      "path": "/open-apis/org/v1/departments",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "parentId": {
+                "type": "string",
+                "maxLength": 50
+              },
+              "code": {
+                "type": "string",
+                "maxLength": 30
+              },
+              "leadId": {
+                "type": "string",
+                "maxLength": 50
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 255
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "parentId"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "name": "Procurement Center",
+        "parentId": "0",
+        "code": "PC",
+        "leadId": "2c92809094a7057b0195a86ef4f9683d",
+        "description": "The department responsible for production material procurement within the company."
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "name",
+            "required": true,
+            "kind": "string",
+            "description": "Department name. * Note: * Cannot contain slashes ( / ). * Must not duplicate existing department names. * Maximum department hierarchy is 10 levels. * Data validation rules: * Max length: 200.",
+            "depth": 0
+          },
+          {
+            "name": "parentId",
+            "required": true,
+            "kind": "string",
+            "description": "Parent department ID. Note: * If creating a department under the root department, this value is \"0\" . Data validation rules: * Max length: 50.",
+            "depth": 0
+          },
+          {
+            "name": "code",
+            "required": false,
+            "kind": "string",
+            "description": "Custom department code. Default value: Empty, meaning the system generates the code automatically. Data validation rules: * Max length: 30. * Regex validation: ^[A-Z0-9]+$ .",
+            "depth": 0
+          },
+          {
+            "name": "leadId",
+            "required": false,
+            "kind": "string",
+            "description": "Employee ID of the department head. Default value: Empty. Data validation rules: * Max length: 50.",
+            "depth": 0
+          },
+          {
+            "name": "description",
+            "required": false,
+            "kind": "string",
+            "description": "Department description. Default value: Empty. Data validation rules: * Max length: 255.",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "mutation",
+      "updated_at": "2026-03-25T02:28:20.560850Z"
+    },
+    {
+      "id": "8a8883949a54d914019a802609ab008e",
+      "title": "Delete Department",
+      "sections": [
+        "Organization",
+        "Department"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff43bcb003e/8a8883949a54d914019a802609ab008e",
+      "method": "DELETE",
+      "path": "/open-apis/org/v1/departments/{department_id}",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "object",
+            "properties": {
+              "department_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "department_id"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path"
+        ]
+      },
+      "example": null,
+      "parameters": {
+        "path": [
+          {
+            "name": "department_id",
+            "required": true,
+            "kind": "string",
+            "description": "Department ID. Obtained from the response of the create department API.",
+            "depth": 0
+          }
+        ],
+        "query": [],
+        "body": []
+      },
+      "kind": "mutation",
+      "updated_at": "2026-03-25T02:28:37.473955Z"
+    },
+    {
+      "id": "8a8883949a54d914019a80265d070091",
+      "title": "Update Full Department Information",
+      "sections": [
+        "Organization",
+        "Department"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff43bcb003e/8a8883949a54d914019a80265d070091",
+      "method": "PUT",
+      "path": "/open-apis/org/v1/departments/{department_id}",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "object",
+            "properties": {
+              "department_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "department_id"
+            ]
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "parentId": {
+                "type": "string",
+                "maxLength": 50
+              },
+              "leadId": {
+                "type": "string",
+                "maxLength": 50
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 255
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "parentId"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "body"
+        ]
+      },
+      "example": {
+        "name": "Global Procurement Center",
+        "parentId": "2c92809094a7057b0194d3c68b560004",
+        "leadId": "2c92809094a7057b0195a86ef4f9683d",
+        "description": "The department responsible for global production material procurement within the company."
+      },
+      "parameters": {
+        "path": [
+          {
+            "name": "department_id",
+            "required": true,
+            "kind": "string",
+            "description": "Department ID. Obtained from the response of the create department API.",
+            "depth": 0
+          }
+        ],
+        "query": [],
+        "body": [
+          {
+            "name": "name",
+            "required": true,
+            "kind": "string",
+            "description": "Department name. * Note: * Cannot contain slashes ( / ). * Must not duplicate existing department names. * Maximum department hierarchy is 10 levels. * Data validation rules: * Max length: 200.",
+            "depth": 0
+          },
+          {
+            "name": "parentId",
+            "required": true,
+            "kind": "string",
+            "description": "Parent department ID. * Obtained from the response of the create department API. Data validation rules: * Max length: 50.",
+            "depth": 0
+          },
+          {
+            "name": "leadId",
+            "required": false,
+            "kind": "string",
+            "description": "Employee ID of the department head. Default value: Empty. Data validation rules: * Max length: 50.",
+            "depth": 0
+          },
+          {
+            "name": "description",
+            "required": false,
+            "kind": "string",
+            "description": "Department description. Default value: Empty. Data validation rules: * Max length: 255.",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "mutation",
+      "updated_at": "2026-03-25T02:29:02.453278Z"
+    },
+    {
+      "id": "8a8883949a54d914019a8026a4140094",
+      "title": "Get Department Details",
+      "sections": [
+        "Organization",
+        "Department"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff43bcb003e/8a8883949a54d914019a8026a4140094",
+      "method": "GET",
+      "path": "/open-apis/org/v1/departments/{department_id}",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "object",
+            "properties": {
+              "department_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "department_id"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path"
+        ]
+      },
+      "example": null,
+      "parameters": {
+        "path": [
+          {
+            "name": "department_id",
+            "required": true,
+            "kind": "string",
+            "description": "Department ID. Obtained from the response of the create department API.",
+            "depth": 0
+          }
+        ],
+        "query": [],
+        "body": []
+      },
+      "kind": "query",
+      "updated_at": "2026-03-25T02:29:32.043077Z"
+    },
+    {
+      "id": "8a8883949a54d914019a8026e9900097",
+      "title": "Query Department Information Enabled (Paginated)",
+      "sections": [
+        "Organization",
+        "Department"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff43bcb003e/8a8883949a54d914019a8026e9900097",
+      "method": "POST",
+      "path": "/open-apis/org/v1/departments/search",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "pageNumber": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 1
+              },
+              "pageSize": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 10
+              },
+              "name": {
+                "type": "string"
+              },
+              "parentId": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "leadId": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "pageNumber",
+              "pageSize"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "pageNumber": 1,
+        "pageSize": 10,
+        "name": "Global Procurement Center",
+        "parentId": "2c92809094a7057b0194d3c68b560004",
+        "code": "PC",
+        "leadId": "2c92809094a7057b0195a86ef4f9683d"
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "pageNumber",
+            "required": true,
+            "kind": "int",
+            "description": "Page number for the data returned by the current request. Default value: 1. * Data validation rules: * Minimum value: 1.",
+            "depth": 0
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "kind": "int",
+            "description": "Page size, limits the number of data entries returned by the current request. Default value: 10. * Data validation rules: * Minimum value: 1. * Maximum value: 100.",
+            "depth": 0
+          },
+          {
+            "name": "name",
+            "required": false,
+            "kind": "string",
+            "description": "Department name.",
+            "depth": 0
+          },
+          {
+            "name": "parentId",
+            "required": false,
+            "kind": "string",
+            "description": "Parent department ID.",
+            "depth": 0
+          },
+          {
+            "name": "code",
+            "required": false,
+            "kind": "string",
+            "description": "Department code.",
+            "depth": 0
+          },
+          {
+            "name": "leadId",
+            "required": false,
+            "kind": "string",
+            "description": "Employee ID of the department head.",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "query",
+      "updated_at": "2026-03-25T02:29:52.889971Z"
+    },
+    {
+      "id": "8a8883949a54d914019a80276628009a",
+      "title": "Create Person",
+      "sections": [
+        "Organization",
+        "Person"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff4798d0042/8a8883949a54d914019a80276628009a",
+      "method": "POST",
+      "path": "/open-apis/org/v1/employees",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "departmentId": {
+                "type": "string",
+                "maxLength": 50
+              },
+              "firstName": {
+                "type": "string",
+                "maxLength": 32
+              },
+              "employeeCode": {
+                "type": "string",
+                "maxLength": 50
+              },
+              "email": {
+                "type": "string",
+                "maxLength": 255
+              },
+              "phone": {
+                "type": "string",
+                "maxLength": 16
+              },
+              "gender": {
+                "type": "string",
+                "maxLength": 10,
+                "enum": [
+                  "M",
+                  "F",
+                  "O"
+                ]
+              },
+              "joinDate": {
+                "type": "string",
+                "maxLength": 10,
+                "format": "date"
+              },
+              "probationEnd": {
+                "type": "string",
+                "maxLength": 10,
+                "format": "date"
+              },
+              "designationId": {
+                "type": "string",
+                "maxLength": 50
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "departmentId",
+              "firstName"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "departmentId": "2c9280959638e61801964175999b0018",
+        "firstName": "Zhang San",
+        "employeeCode": "ZHANGSAN",
+        "email": "zhangsan@qq.com",
+        "phone": "+86-15011557818",
+        "gender": "M",
+        "joinDate": "2025-01-01",
+        "probationEnd": "2025-03-01",
+        "designationId": "2c92809094a7057b0194d3c68bce0005"
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "departmentId",
+            "required": true,
+            "kind": "string",
+            "description": "ID of the department the employee belongs to. Data validation rules: * Max length: 50.",
+            "depth": 0
+          },
+          {
+            "name": "firstName",
+            "required": true,
+            "kind": "string",
+            "description": "Employee's first name (or full name in Chinese context). * Data validation rules: * Max length: 32.",
+            "depth": 0
+          },
+          {
+            "name": "employeeCode",
+            "required": false,
+            "kind": "string",
+            "description": "Custom employee code. Default value: Empty, meaning the system generates the code automatically. Data validation rules: * Max length: 50. * Regex validation: ^[A-Z0-9]+$ .",
+            "depth": 0
+          },
+          {
+            "name": "email",
+            "required": false,
+            "kind": "string",
+            "description": "Employee email. Default value: Empty. Data validation rules: * Max length: 255. * Regex validation: ^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$ .",
+            "depth": 0
+          },
+          {
+            "name": "phone",
+            "required": false,
+            "kind": "string",
+            "description": "Employee phone number. * Note: * Phone number must be unique within the tenant. * International code is required: Must start with + followed by at least one digit (e.g., +89 ). * Separator is mandatory - : Must use - between the international code and the phone number. * Phone number format: Must conform to mainland China standard, 11 digits, second digit 3-9 (e.g., 13800138000). * Example: Mainland China phone: +86-13011111111 . Default value: Empty. Data validation rules: * Max length: 16. * Regex validation: ^\\++\\d+-1[3-9]\\d{9}$ .",
+            "depth": 0
+          },
+          {
+            "name": "gender",
+            "required": false,
+            "kind": "string",
+            "description": "Employee gender. Default value: Empty. Optional values: * M : Male * F : Female * O : Other Data validation rules: * Max length: 10. * Regex validation: ^[MFO]$ .",
+            "depth": 0
+          },
+          {
+            "name": "joinDate",
+            "required": false,
+            "kind": "string",
+            "description": "Employee join date. Note: * Date format: yyyy-MM-dd , e.g., 2025-02-01 . Default value: Empty. Data validation rules: * Max length: 10. * Regex validation: ^\\d{4}-\\d{2}-\\d{2}$ .",
+            "depth": 0
+          },
+          {
+            "name": "probationEnd",
+            "required": false,
+            "kind": "string",
+            "description": "Employee probation end date. Note: * Date format: yyyy-MM-dd , e.g., 2025-04-01 . Default value: Empty. Data validation rules: * Max length: 10. * Regex validation: ^\\d{4}-\\d{2}-\\d{2}$ .",
+            "depth": 0
+          },
+          {
+            "name": "designationId",
+            "required": false,
+            "kind": "string",
+            "description": "ID of the designation (job title/position) the employee belongs to. Default value: Employee designation ID. Data validation rules: * Max length: 50.",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "mutation",
+      "updated_at": "2026-03-25T02:30:10.940377Z"
+    },
+    {
+      "id": "8a8883949a54d914019a8027cb01009d",
+      "title": "Delete Person",
+      "sections": [
+        "Organization",
+        "Person"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff4798d0042/8a8883949a54d914019a8027cb01009d",
+      "method": "DELETE",
+      "path": "/open-apis/org/v1/employees/{employee_id}",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "object",
+            "properties": {
+              "employee_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "employee_id"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path"
+        ]
+      },
+      "example": null,
+      "parameters": {
+        "path": [
+          {
+            "name": "employee_id",
+            "required": true,
+            "kind": "string",
+            "description": "Employee ID. Obtained from the response of the create employee API.",
+            "depth": 0
+          }
+        ],
+        "query": [],
+        "body": []
+      },
+      "kind": "mutation",
+      "updated_at": "2026-03-25T02:30:33.445326Z"
+    },
+    {
+      "id": "8a8883949a54d914019a8027feb200a0",
+      "title": "Resign Person",
+      "sections": [
+        "Organization",
+        "Person"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff4798d0042/8a8883949a54d914019a8027feb200a0",
+      "method": "PATCH",
+      "path": "/open-apis/org/v1/employees/{employee_id}/resign",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "object",
+            "properties": {
+              "employee_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "employee_id"
+            ]
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "resignDate": {
+                "type": "string",
+                "maxLength": 10,
+                "format": "date"
+              },
+              "resignReason": {
+                "type": "string",
+                "maxLength": 200
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "resignDate"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "body"
+        ]
+      },
+      "example": {
+        "resignDate": "2025-04-14",
+        "resignReason": "Voluntary resignation"
+      },
+      "parameters": {
+        "path": [
+          {
+            "name": "employee_id",
+            "required": true,
+            "kind": "string",
+            "description": "Employee ID. Obtained from the response of the create employee API.",
+            "depth": 0
+          }
+        ],
+        "query": [],
+        "body": [
+          {
+            "name": "resignDate",
+            "required": true,
+            "kind": "string",
+            "description": "Employee resignation date. Note: * Date format: yyyy-MM-dd , e.g., 2025-02-01 . Default value: Empty. Data validation rules: * Max length: 10. * Regex validation: ^\\d{4}-\\d{2}-\\d{2}$ .",
+            "depth": 0
+          },
+          {
+            "name": "resignReason",
+            "required": false,
+            "kind": "string",
+            "description": "Employee resignation reason. Default value: Empty. Data validation rules: * Max length: 200.",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "mutation",
+      "updated_at": "2026-03-25T02:31:08.611425Z"
+    },
+    {
+      "id": "8a8883949a54d914019a8029189a00a3",
+      "title": "Update Full Person Information",
+      "sections": [
+        "Organization",
+        "Person"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff4798d0042/8a8883949a54d914019a8029189a00a3",
+      "method": "PUT",
+      "path": "/open-apis/org/v1/employees/{employee_id}",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "object",
+            "properties": {
+              "employee_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "employee_id"
+            ]
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "departmentId": {
+                "type": "string",
+                "maxLength": 50
+              },
+              "firstName": {
+                "type": "string",
+                "maxLength": 32
+              },
+              "email": {
+                "type": "string",
+                "maxLength": 255
+              },
+              "phone": {
+                "type": "string",
+                "maxLength": 16
+              },
+              "gender": {
+                "type": "string",
+                "maxLength": 10,
+                "enum": [
+                  "M",
+                  "F",
+                  "O"
+                ]
+              },
+              "joinDate": {
+                "type": "string",
+                "maxLength": 10,
+                "format": "date"
+              },
+              "probationEnd": {
+                "type": "string",
+                "maxLength": 10,
+                "format": "date"
+              },
+              "designationId": {
+                "type": "string",
+                "maxLength": 50
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "departmentId",
+              "firstName"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "body"
+        ]
+      },
+      "example": {
+        "departmentId": "2c9280959638e61801964175999b0018",
+        "firstName": "Zhang San",
+        "email": "zhangsan@qq.com",
+        "phone": "+86-15011557818",
+        "gender": "M",
+        "joinDate": "2025-01-01",
+        "probationEnd": "2025-03-01",
+        "designationId": "2c92809094a7057b0194d3c68bce0005"
+      },
+      "parameters": {
+        "path": [
+          {
+            "name": "employee_id",
+            "required": true,
+            "kind": "string",
+            "description": "Employee ID. Obtained from the response of the create employee API.",
+            "depth": 0
+          }
+        ],
+        "query": [],
+        "body": [
+          {
+            "name": "departmentId",
+            "required": true,
+            "kind": "string",
+            "description": "ID of the department the employee belongs to. Data validation rules: * Max length: 50.",
+            "depth": 0
+          },
+          {
+            "name": "firstName",
+            "required": true,
+            "kind": "string",
+            "description": "Employee's first name (or full name in Chinese context). * Data validation rules: * Max length: 32.",
+            "depth": 0
+          },
+          {
+            "name": "email",
+            "required": false,
+            "kind": "string",
+            "description": "Employee email. Default value: Empty. Data validation rules: * Max length: 255. * Regex validation: ^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$ .",
+            "depth": 0
+          },
+          {
+            "name": "phone",
+            "required": false,
+            "kind": "string",
+            "description": "Employee phone number. * Note: * Phone number must be unique within the tenant. * International code is required: Must start with + followed by at least one digit (e.g., +89 ). * Separator is mandatory - : Must use - between the international code and the phone number. * Phone number format: Must conform to mainland China standard, 11 digits, second digit 3-9 (e.g., 13800138000). * Example: Mainland China phone: +86-13011111111 . Default value: Empty. Data validation rules: * Max length: 16. * Regex validation: ^\\++\\d+-1[3-9]\\d{9}$ .",
+            "depth": 0
+          },
+          {
+            "name": "gender",
+            "required": false,
+            "kind": "string",
+            "description": "Employee gender. Default value: Empty. Optional values: * M : Male * F : Female * O : Other Data validation rules: * Max length: 10. * Regex validation: ^[MFO]$ .",
+            "depth": 0
+          },
+          {
+            "name": "joinDate",
+            "required": false,
+            "kind": "string",
+            "description": "Employee join date. Note: * Date format: yyyy-MM-dd , e.g., 2025-02-01 . Default value: Empty. Data validation rules: * Max length: 10. * Regex validation: ^\\d{4}-\\d{2}-\\d{2}$ .",
+            "depth": 0
+          },
+          {
+            "name": "probationEnd",
+            "required": false,
+            "kind": "string",
+            "description": "Employee probation end date. Note: * Date format: yyyy-MM-dd , e.g., 2025-04-01 . Default value: Empty. Data validation rules: * Max length: 10. * Regex validation: ^\\d{4}-\\d{2}-\\d{2}$ .",
+            "depth": 0
+          },
+          {
+            "name": "designationId",
+            "required": false,
+            "kind": "string",
+            "description": "ID of the designation (job title/position) the employee belongs to. Default value: Employee designation ID. Data validation rules: * Max length: 50.",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "mutation",
+      "updated_at": "2026-03-25T02:31:27.537504Z"
+    },
+    {
+      "id": "8a8883949a54d914019a80295aad00a6",
+      "title": "Get Person Details",
+      "sections": [
+        "Organization",
+        "Person"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff4798d0042/8a8883949a54d914019a80295aad00a6",
+      "method": "GET",
+      "path": "/open-apis/org/v1/employees/{employee_id}",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "object",
+            "properties": {
+              "employee_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "employee_id"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path"
+        ]
+      },
+      "example": null,
+      "parameters": {
+        "path": [
+          {
+            "name": "employee_id",
+            "required": true,
+            "kind": "string",
+            "description": "Employee ID. Obtained from the response of the create employee API.",
+            "depth": 0
+          }
+        ],
+        "query": [],
+        "body": []
+      },
+      "kind": "query",
+      "updated_at": "2026-03-25T02:31:51.192091Z"
+    },
+    {
+      "id": "8a8883949a54d914019a8029c1f400a9",
+      "title": "Query Person Information (Paginated)",
+      "sections": [
+        "Organization",
+        "Person"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff4798d0042/8a8883949a54d914019a8029c1f400a9",
+      "method": "POST",
+      "path": "/open-apis/org/v1/employees/search",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "pageNumber": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 1
+              },
+              "pageSize": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 10
+              },
+              "departmentId": {
+                "type": "string"
+              },
+              "employeeCode": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "pageNumber",
+              "pageSize"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "pageNumber": 1,
+        "pageSize": 10,
+        "departmentId": "2c9280959638e61801964175999b0018",
+        "employeeCode": "ZHANGSAN",
+        "phone": "15011557818"
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "pageNumber",
+            "required": true,
+            "kind": "int",
+            "description": "Page number for the data returned by the current request. Default value: 1. * Data validation rules: * Minimum value: 1.",
+            "depth": 0
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "kind": "int",
+            "description": "Page size, limits the number of data entries returned by the current request. Default value: 10. * Data validation rules: * Minimum value: 1. * Maximum value: 100.",
+            "depth": 0
+          },
+          {
+            "name": "departmentId",
+            "required": false,
+            "kind": "string",
+            "description": "ID of the department the employee belongs to.",
+            "depth": 0
+          },
+          {
+            "name": "employeeCode",
+            "required": false,
+            "kind": "string",
+            "description": "Employee code.",
+            "depth": 0
+          },
+          {
+            "name": "phone",
+            "required": false,
+            "kind": "string",
+            "description": "Employee phone number. Note: * International code not required, e.g., just 15011557818 .",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "query",
+      "updated_at": "2026-05-12T03:31:25.660380Z"
+    },
+    {
+      "id": "8a8883949a54d914019a802b961a00ac",
+      "title": "Detect Facial Credential Quality Score",
+      "sections": [
+        "Credentials",
+        "Credential Management"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff4eeec0046/8a8883949a54d914019a802b961a00ac",
+      "method": "POST",
+      "path": "/open-apis/cms/v1/credentials/visibleLightFace/detect",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "bioPhoto": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "bioPhoto"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "bioPhoto": "/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEU... ..."
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "bioPhoto",
+            "required": true,
+            "kind": "string",
+            "description": "Base64 encoded string of the face image Data validation rules: * Exclude MIME type prefix (e.g., data:image/jpeg;base64, )",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "query",
+      "updated_at": "2026-03-25T02:24:02.312863Z"
+    },
+    {
+      "id": "8a8883949a54d914019a802befe100af",
+      "title": "Register Facial Credentials for Specific Person",
+      "sections": [
+        "Credentials",
+        "Credential Management"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff4eeec0046/8a8883949a54d914019a802befe100af",
+      "method": "POST",
+      "path": "/open-apis/cms/v1/credentials/visibleLightFace",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "employeeId": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "employeeId",
+              "content"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "employeeId": "2c92809c982cbbd40198310e90cf0031",
+        "content": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEU... ..."
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "employeeId",
+            "required": true,
+            "kind": "string",
+            "description": "Employee ID",
+            "depth": 0
+          },
+          {
+            "name": "content",
+            "required": true,
+            "kind": "string",
+            "description": "Base64 encoded string of the face image Data validation rules: * Include MIME type prefix (e.g., data:image/jpeg;base64, ) * Face image size cannot exceed 1MB",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "mutation",
+      "updated_at": "2026-03-25T02:24:25.314811Z"
+    },
+    {
+      "id": "8a8883949a54d914019a802c502e00b2",
+      "title": "Register Card Credentials for Specific Person",
+      "sections": [
+        "Credentials",
+        "Credential Management"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff4eeec0046/8a8883949a54d914019a802c502e00b2",
+      "method": "POST",
+      "path": "/open-apis/cms/v1/credentials/card",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "employeeId": {
+                "type": "string"
+              },
+              "cardNumber": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "employeeId",
+              "cardNumber"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "employeeId": "2c92809c982cbbd40198310e90cf0031",
+        "cardNumber": "452789"
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "employeeId",
+            "required": true,
+            "kind": "string",
+            "description": "Employee ID",
+            "depth": 0
+          },
+          {
+            "name": "cardNumber",
+            "required": true,
+            "kind": "string",
+            "description": "Card number Data validation rules: * Must be a positive integer",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "mutation",
+      "updated_at": "2026-03-25T02:26:33.119163Z"
+    },
+    {
+      "id": "8a8883949a54d914019a802ca98600b5",
+      "title": "Delete Specific Person's Biometric Credentials",
+      "sections": [
+        "Credentials",
+        "Credential Management"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff4eeec0046/8a8883949a54d914019a802ca98600b5",
+      "method": "DELETE",
+      "path": "/open-apis/cms/v1/credentials",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "employeeId": {
+                "type": "string"
+              },
+              "bioType": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "employeeId",
+              "bioType"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "employeeId": "2c92809c982cbbd40198310e90cf0031",
+        "bioType": "9"
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "employeeId",
+            "required": true,
+            "kind": "string",
+            "description": "Employee ID",
+            "depth": 0
+          },
+          {
+            "name": "bioType",
+            "required": true,
+            "kind": "string",
+            "description": "Credential type ID Optional values: * 9 : Visible Light Face * 100 : Card Number",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "mutation",
+      "updated_at": "2026-03-25T02:27:46.537273Z"
+    },
+    {
+      "id": "8a8883949a54d914019a802dd09900be",
+      "title": "Add Time Slot",
+      "sections": [
+        "Access Control",
+        "Time Slot"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff5665c004a/8a8883949a54d914019a802dd09900be",
+      "method": "POST",
+      "path": "/open-apis/acc/v1/schedules",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 100
+              },
+              "timezones": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "intervals": {
+                      "type": "integer"
+                    },
+                    "type": {
+                      "type": "integer"
+                    },
+                    "startTime": {
+                      "type": "string"
+                    },
+                    "endTime": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "type",
+                    "startTime",
+                    "endTime"
+                  ]
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "timezones"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "name": "9-to-5",
+        "timezones": [
+          {
+            "intervals": 1,
+            "type": 1,
+            "startTime": "09:00",
+            "endTime": "12:00"
+          },
+          {
+            "intervals": 2,
+            "type": 1,
+            "startTime": "13:30",
+            "endTime": "17:00"
+          },
+          {
+            "intervals": 1,
+            "type": 2,
+            "startTime": "09:00",
+            "endTime": "12:00"
+          },
+          {
+            "intervals": 2,
+            "type": 2,
+            "startTime": "13:30",
+            "endTime": "17:00"
+          }
+        ]
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "name",
+            "required": true,
+            "kind": "string",
+            "description": "Time schedule name Data validation rules: * Max length: 100",
+            "depth": 0
+          },
+          {
+            "name": "timezones",
+            "required": true,
+            "kind": "array",
+            "description": "List of time schedule zones",
+            "depth": 0
+          },
+          {
+            "name": "type",
+            "required": true,
+            "kind": "int",
+            "description": "Time schedule zone type (day of week) Optional values: * 1 : Monday * 2 : Tuesday * 3 : Wednesday * 4 : Thursday * 5 : Friday * 6 : Saturday * 0 : Sunday",
+            "depth": 1
+          },
+          {
+            "name": "startTime",
+            "required": true,
+            "kind": "string",
+            "description": "Time schedule zone start time, format HH:mm",
+            "depth": 1
+          },
+          {
+            "name": "endTime",
+            "required": true,
+            "kind": "string",
+            "description": "Time schedule zone end time, format HH:mm",
+            "depth": 1
+          },
+          {
+            "name": "intervals",
+            "required": false,
+            "kind": "int",
+            "description": "Interval value for the zone, ranging from 1 to 12",
+            "depth": 1
+          }
+        ]
+      },
+      "kind": "mutation",
+      "updated_at": "2026-03-25T02:18:14.930123Z"
+    },
+    {
+      "id": "8a8883949a54d914019a802dfd4d00c1",
+      "title": "Delete Time Slot",
+      "sections": [
+        "Access Control",
+        "Time Slot"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff5665c004a/8a8883949a54d914019a802dfd4d00c1",
+      "method": "DELETE",
+      "path": "/open-apis/acc/v1/schedules/{schedule_id}",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "object",
+            "properties": {
+              "schedule_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "schedule_id"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path"
+        ]
+      },
+      "example": null,
+      "parameters": {
+        "path": [
+          {
+            "name": "schedule_id",
+            "required": true,
+            "kind": "string",
+            "description": "Time schedule ID. Obtained from the response of the create schedule API",
+            "depth": 0
+          }
+        ],
+        "query": [],
+        "body": []
+      },
+      "kind": "mutation",
+      "updated_at": "2026-03-25T02:18:41.722379Z"
+    },
+    {
+      "id": "8a8883949a54d914019a802e316400c4",
+      "title": "Bulk Update Time Slots",
+      "sections": [
+        "Access Control",
+        "Time Slot"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff5665c004a/8a8883949a54d914019a802e316400c4",
+      "method": "PUT",
+      "path": "/open-apis/acc/v1/schedules/{schedule_id}",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "object",
+            "properties": {
+              "schedule_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "schedule_id"
+            ]
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 100
+              },
+              "timezones": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "intervals": {
+                      "type": "integer"
+                    },
+                    "type": {
+                      "type": [
+                        "string",
+                        "integer"
+                      ]
+                    },
+                    "startTime": {
+                      "type": "string"
+                    },
+                    "endTime": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "type",
+                    "startTime",
+                    "endTime"
+                  ]
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "timezones"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "body"
+        ]
+      },
+      "example": {
+        "name": "9-to-5",
+        "timezones": [
+          {
+            "intervals": 1,
+            "type": 1,
+            "startTime": "09:00",
+            "endTime": "12:00"
+          },
+          {
+            "intervals": 2,
+            "type": 1,
+            "startTime": "13:30",
+            "endTime": "17:00"
+          },
+          {
+            "intervals": 1,
+            "type": 2,
+            "startTime": "09:00",
+            "endTime": "12:00"
+          },
+          {
+            "intervals": 2,
+            "type": 2,
+            "startTime": "13:30",
+            "endTime": "17:00"
+          },
+          {
+            "intervals": 1,
+            "type": 3,
+            "startTime": "09:00",
+            "endTime": "12:00"
+          },
+          {
+            "intervals": 2,
+            "type": 3,
+            "startTime": "13:30",
+            "endTime": "17:00"
+          }
+        ]
+      },
+      "parameters": {
+        "path": [
+          {
+            "name": "schedule_id",
+            "required": true,
+            "kind": "string",
+            "description": "Time schedule ID. Obtained from the response of the create schedule API",
+            "depth": 0
+          }
+        ],
+        "query": [],
+        "body": [
+          {
+            "name": "name",
+            "required": true,
+            "kind": "string",
+            "description": "Time schedule name Data validation rules: * Max length: 100",
+            "depth": 0
+          },
+          {
+            "name": "timezones",
+            "required": true,
+            "kind": "array",
+            "description": "List of time schedule zones",
+            "depth": 0
+          },
+          {
+            "name": "type",
+            "required": true,
+            "kind": "string",
+            "description": "Time schedule zone type (day of week) Optional values: * 1 : Monday * 2 : Tuesday * 3 : Wednesday * 4 : Thursday * 5 : Friday * 6 : Saturday * 0 : Sunday",
+            "depth": 1
+          },
+          {
+            "name": "startTime",
+            "required": true,
+            "kind": "string",
+            "description": "Time schedule zone start time, format HH:mm",
+            "depth": 1
+          },
+          {
+            "name": "endTime",
+            "required": true,
+            "kind": "string",
+            "description": "Time schedule zone end time, format HH:mm",
+            "depth": 1
+          },
+          {
+            "name": "intervals",
+            "required": false,
+            "kind": "int",
+            "description": "Interval value for the zone, ranging from 1 to 12",
+            "depth": 1
+          }
+        ]
+      },
+      "kind": "mutation",
+      "updated_at": "2026-03-25T02:19:13.440837Z"
+    },
+    {
+      "id": "8a8883949a54d914019a802e6ac400c7",
+      "title": "Get Time Slot Details",
+      "sections": [
+        "Access Control",
+        "Time Slot"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff5665c004a/8a8883949a54d914019a802e6ac400c7",
+      "method": "GET",
+      "path": "/open-apis/acc/v1/schedules/{schedule_id}",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "object",
+            "properties": {
+              "schedule_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "schedule_id"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path"
+        ]
+      },
+      "example": null,
+      "parameters": {
+        "path": [
+          {
+            "name": "schedule_id",
+            "required": true,
+            "kind": "string",
+            "description": "Time schedule ID. Obtained from the response of the create schedule API",
+            "depth": 0
+          }
+        ],
+        "query": [],
+        "body": []
+      },
+      "kind": "query",
+      "updated_at": "2026-03-25T02:19:49.255363Z"
+    },
+    {
+      "id": "8a8883949a54d914019a802ebbbd00ca",
+      "title": "Query Time Slot Information (Paginated)",
+      "sections": [
+        "Access Control",
+        "Time Slot"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff5665c004a/8a8883949a54d914019a802ebbbd00ca",
+      "method": "POST",
+      "path": "/open-apis/acc/v1/schedules/search",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "pageNumber": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 1
+              },
+              "pageSize": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 10
+              },
+              "operationName": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "pageNumber",
+              "pageSize"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "pageNumber": 1,
+        "pageSize": 10,
+        "operationName": "9-to-5"
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "pageNumber",
+            "required": true,
+            "kind": "int",
+            "description": "Page number for the data returned by the current request Default value: 1 Data validation rules: * Minimum value: 1",
+            "depth": 0
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "kind": "int",
+            "description": "Page size, limits the number of data entries returned by the current request Default value: 10 Data validation rules: * Minimum value: 1 * Maximum value: 100",
+            "depth": 0
+          },
+          {
+            "name": "operationName",
+            "required": false,
+            "kind": "string",
+            "description": "Time schedule name",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "query",
+      "updated_at": "2026-03-25T02:20:09.628304Z"
+    },
+    {
+      "id": "8a8883949a54d914019a802f108600cd",
+      "title": "Add Access Level",
+      "sections": [
+        "Access Control",
+        "Access Level"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff5abfc004e/8a8883949a54d914019a802f108600cd",
+      "method": "POST",
+      "path": "/open-apis/acc/v1/levels",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 50
+              },
+              "tag": {
+                "type": "string",
+                "maxLength": 255
+              },
+              "doors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "doorId": {
+                      "type": "string",
+                      "maxLength": 50
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "members": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": [
+                        "string",
+                        "integer"
+                      ]
+                    },
+                    "id": {
+                      "type": "string",
+                      "maxLength": 50
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "schedulerId": {
+                "type": "string",
+                "maxLength": 50
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "name": "Test Level A",
+        "tag": "ACC",
+        "doors": [
+          {
+            "doorId": "c298f2989c764fa8be623c2f6d8b7510"
+          }
+        ],
+        "members": [
+          {
+            "type": 1,
+            "id": "2c9280959638e61801964175999b0018"
+          },
+          {
+            "type": 2,
+            "id": "2c92809094a7057b0194d546520e2988"
+          }
+        ]
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "name",
+            "required": true,
+            "kind": "string",
+            "description": "Level name. Data validation rules: ▪ Max length: 50.",
+            "depth": 0
+          },
+          {
+            "name": "schedulerId",
+            "required": false,
+            "kind": "string",
+            "description": "Time schedule ID. Default value: 24-Hour Access schedule. Data validation rules: ▪ Max length: 50.",
+            "depth": 0
+          },
+          {
+            "name": "tag",
+            "required": false,
+            "kind": "string",
+            "description": "Level tag, identifies the module (Access Control: ACC , Visitor: VIS ). Data validation rules: ▪ Max length: 255.",
+            "depth": 0
+          },
+          {
+            "name": "doorId",
+            "required": false,
+            "kind": "string",
+            "description": "Door ID (within the doors array). Data validation rules: ▪ Max length: 50.",
+            "depth": 0
+          },
+          {
+            "name": "type",
+            "required": false,
+            "kind": "string",
+            "description": "Member type (within the members array). Optional values: ▪ 1 : Department ▪ 2 : Employee",
+            "depth": 0
+          },
+          {
+            "name": "id",
+            "required": false,
+            "kind": "string",
+            "description": "Member ID (within the members array). Data validation rules: ▪ Max length: 50.",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "mutation",
+      "updated_at": "2026-03-25T02:21:11.153927Z"
+    },
+    {
+      "id": "8a8883949a54d914019a802f3b0600d0",
+      "title": "Delete Access Level",
+      "sections": [
+        "Access Control",
+        "Access Level"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff5abfc004e/8a8883949a54d914019a802f3b0600d0",
+      "method": "DELETE",
+      "path": "/open-apis/acc/v1/levels/{level_id}",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "object",
+            "properties": {
+              "level_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "level_id"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path"
+        ]
+      },
+      "example": null,
+      "parameters": {
+        "path": [
+          {
+            "name": "level_id",
+            "required": true,
+            "kind": "string",
+            "description": "Level ID.",
+            "depth": 0
+          }
+        ],
+        "query": [],
+        "body": []
+      },
+      "kind": "mutation",
+      "updated_at": "2026-05-20T09:04:21.129679Z"
+    },
+    {
+      "id": "8a8883949a54d914019a802f73ab00d3",
+      "title": "Bulk Update Access Levels",
+      "sections": [
+        "Access Control",
+        "Access Level"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff5abfc004e/8a8883949a54d914019a802f73ab00d3",
+      "method": "PUT",
+      "path": "/open-apis/acc/v1/levels/{level_id}",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "object",
+            "properties": {
+              "level_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "level_id"
+            ]
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 50
+              },
+              "schedulerId": {
+                "type": "string",
+                "maxLength": 50
+              },
+              "tag": {
+                "type": "string",
+                "maxLength": 50
+              },
+              "doors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "doorId": {
+                      "type": "string",
+                      "maxLength": 50
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "members": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "integer"
+                    },
+                    "id": {
+                      "type": "string",
+                      "maxLength": 50
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "schedulerId"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "body"
+        ]
+      },
+      "example": {
+        "name": "Test Level A",
+        "schedulerId": "2cb24882949762c60194d3c68a991f42",
+        "tag": "ACC",
+        "doors": [
+          {
+            "doorId": "c298f2989c764fa8be623c2f6d8b7510"
+          }
+        ],
+        "members": [
+          {
+            "type": 1,
+            "id": "2c9280959638e61801964175999b0018"
+          },
+          {
+            "type": 2,
+            "id": "2c92809094a7057b0194d546520e2988"
+          }
+        ]
+      },
+      "parameters": {
+        "path": [
+          {
+            "name": "level_id",
+            "required": true,
+            "kind": "string",
+            "description": "Level ID.",
+            "depth": 0
+          }
+        ],
+        "query": [],
+        "body": [
+          {
+            "name": "name",
+            "required": true,
+            "kind": "string",
+            "description": "Level name. Data validation rules: ▪ Max length: 50.",
+            "depth": 0
+          },
+          {
+            "name": "schedulerId",
+            "required": true,
+            "kind": "string",
+            "description": "Time schedule ID. Data validation rules: ▪ Max length: 50.",
+            "depth": 0
+          },
+          {
+            "name": "tag",
+            "required": false,
+            "kind": "string",
+            "description": "Level tag, identifies the module (Access Control: ACC , Visitor: VIS ). Data validation rules: ▪ Max length: 50.",
+            "depth": 0
+          },
+          {
+            "name": "doorId",
+            "required": false,
+            "kind": "string",
+            "description": "Door ID (within the doors array). Data validation rules: ▪ Max length: 50.",
+            "depth": 0
+          },
+          {
+            "name": "type",
+            "required": false,
+            "kind": "integer",
+            "description": "Member type (within the members array). Optional values: ▪ 1 : Department ▪ 2 : Employee",
+            "depth": 0
+          },
+          {
+            "name": "id",
+            "required": false,
+            "kind": "string",
+            "description": "Member ID (within the members array). Data validation rules: ▪ Max length: 50.",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "mutation",
+      "updated_at": "2026-05-20T09:05:26.775688Z"
+    },
+    {
+      "id": "8a8883949a54d914019a802fb22800d6",
+      "title": "Get Access Level Details",
+      "sections": [
+        "Access Control",
+        "Access Level"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff5abfc004e/8a8883949a54d914019a802fb22800d6",
+      "method": "GET",
+      "path": "/open-apis/acc/v1/levels/{level_id}",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "object",
+            "properties": {
+              "level_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "level_id"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path"
+        ]
+      },
+      "example": null,
+      "parameters": {
+        "path": [
+          {
+            "name": "level_id",
+            "required": true,
+            "kind": "string",
+            "description": "Level ID.",
+            "depth": 0
+          }
+        ],
+        "query": [],
+        "body": []
+      },
+      "kind": "query",
+      "updated_at": "2026-05-20T09:05:51.126854Z"
+    },
+    {
+      "id": "8a8883949a54d914019a802ff52000d9",
+      "title": "Query Access Level Information (Paginated)",
+      "sections": [
+        "Access Control",
+        "Access Level"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff5abfc004e/8a8883949a54d914019a802ff52000d9",
+      "method": "POST",
+      "path": "/open-apis/acc/v1/levels/search",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "pageNumber": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 1
+              },
+              "pageSize": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 10
+              },
+              "name": {
+                "type": "string"
+              },
+              "tag": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "pageNumber",
+              "pageSize"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "pageNumber": 1,
+        "pageSize": 10,
+        "name": "General Level",
+        "tag": "ACC"
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "pageNumber",
+            "required": true,
+            "kind": "int",
+            "description": "Page number for the data returned by the current request. Default value: 1. Data validation rules: ▪ Minimum value: 1.",
+            "depth": 0
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "kind": "int",
+            "description": "Page size, limits the number of data entries returned by the current request. Default value: 10. Data validation rules: ▪ Minimum value: 1. ▪ Maximum value: 100.",
+            "depth": 0
+          },
+          {
+            "name": "name",
+            "required": false,
+            "kind": "string",
+            "description": "Level name.",
+            "depth": 0
+          },
+          {
+            "name": "tag",
+            "required": false,
+            "kind": "string",
+            "description": "Level tag, identifies the module (Access Control: ACC ; Visitor: VIS ).",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "query",
+      "updated_at": "2026-05-20T09:06:21.665860Z"
+    },
+    {
+      "id": "8a8883949a54d914019a8030491300dc",
+      "title": "Query Door Information (Paginated)",
+      "sections": [
+        "Access Control",
+        "Doors"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff5e9160052/8a8883949a54d914019a8030491300dc",
+      "method": "POST",
+      "path": "/open-apis/acc/v1/doors/search",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "pageNumber": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 1
+              },
+              "pageSize": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 10
+              },
+              "doorName": {
+                "type": "string"
+              },
+              "deviceSn": {
+                "type": "string"
+              },
+              "deviceAlias": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "pageNumber",
+              "pageSize"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "pageNumber": 1,
+        "pageSize": 10,
+        "doorName": "Door",
+        "deviceSn": "KCF70001",
+        "deviceAlias": "Device"
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "pageNumber",
+            "required": true,
+            "kind": "int",
+            "description": "Page number for the data returned by the current request. Default value: 1. Data validation rules: ▪ Minimum value: 1.",
+            "depth": 0
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "kind": "int",
+            "description": "Page size, limits the number of data entries returned by the current request. Default value: 10. Data validation rules: ▪ Minimum value: 1. ▪ Maximum value: 100.",
+            "depth": 0
+          },
+          {
+            "name": "doorName",
+            "required": false,
+            "kind": "string",
+            "description": "Door name.",
+            "depth": 0
+          },
+          {
+            "name": "deviceSn",
+            "required": false,
+            "kind": "string",
+            "description": "Device serial number.",
+            "depth": 0
+          },
+          {
+            "name": "deviceAlias",
+            "required": false,
+            "kind": "string",
+            "description": "Device alias.",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "query",
+      "updated_at": "2026-03-25T02:23:01.543907Z"
+    },
+    {
+      "id": "8a8883949a54d914019a8030941300df",
+      "title": "Query Door Access Logs (Paginated)",
+      "sections": [
+        "Access Control",
+        "Access Records"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff638a00056/8a8883949a54d914019a8030941300df",
+      "method": "POST",
+      "path": "/open-apis/acc/v1/events/search",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "pageNumber": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 1
+              },
+              "pageSize": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 10
+              },
+              "startDateTime": {
+                "type": "string"
+              },
+              "endDateTime": {
+                "type": "string"
+              },
+              "deviceName": {
+                "type": "string"
+              },
+              "operator": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "pageNumber",
+              "pageSize",
+              "startDateTime",
+              "endDateTime"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "pageNumber": 1,
+        "pageSize": 10,
+        "startDateTime": "2025-10-01 00:00:00",
+        "endDateTime": "2025-10-31 23:59:59",
+        "deviceName": "Device",
+        "operator": ""
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "pageNumber",
+            "required": true,
+            "kind": "int",
+            "description": "Page number for the data returned by the current request. Default value: 1. Data validation rules: ▪ Minimum value: 1.",
+            "depth": 0
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "kind": "int",
+            "description": "Page size, limits the number of data entries returned by the current request. Default value: 10. Data validation rules: ▪ Minimum value: 1. ▪ Maximum value: 100.",
+            "depth": 0
+          },
+          {
+            "name": "startDateTime",
+            "required": true,
+            "kind": "string",
+            "description": "Record start date and time. Note: ▪ Date format: yyyy-MM-dd HH:mm:ss , e.g., 2025-04-01 00:00:00 .",
+            "depth": 0
+          },
+          {
+            "name": "endDateTime",
+            "required": true,
+            "kind": "string",
+            "description": "Record end date and time. Note: ▪ Date format: yyyy-MM-dd HH:mm:ss , e.g., 2025-04-01 23:59:59 .",
+            "depth": 0
+          },
+          {
+            "name": "deviceName",
+            "required": false,
+            "kind": "string",
+            "description": "Device name.",
+            "depth": 0
+          },
+          {
+            "name": "operator",
+            "required": false,
+            "kind": "string",
+            "description": "Operator's employee number.",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "query",
+      "updated_at": "2026-06-22T10:02:06.430934Z"
+    },
+    {
+      "id": "8a8883949a54d914019a80313c6c00e5",
+      "title": "Self-built Application Obtain Tenant Token",
+      "sections": [
+        "Authentication and Authorization"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff0fb03001a/8a8883949a54d914019a80313c6c00e5",
+      "method": "POST",
+      "path": "/open-apis/authen/v1/tenantToken/internal",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "appKey": {
+                "type": "string"
+              },
+              "appSecret": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "appKey",
+              "appSecret"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "appKey": "your_app_key",
+        "appSecret": "your_app_secret"
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "appKey",
+            "required": true,
+            "kind": "string",
+            "description": "Application public key. View the AppKey on the Basic Information > Application Information and Credentials page of the application management platform.",
+            "depth": 0
+          },
+          {
+            "name": "appSecret",
+            "required": true,
+            "kind": "string",
+            "description": "Application private key. View the AppSecret on the Basic Information > Application Information and Credentials page of the application management platform.",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "connection",
+      "updated_at": "2026-07-29T07:47:15.980042Z"
+    },
+    {
+      "id": "8a8883ba9ddee6f6019e023ec9730020",
+      "title": "Admin Query Punch Records (Paginated)",
+      "sections": [
+        "Time Attendance",
+        "Punch Record"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883ba9ddee6f6019e02374cdd0004/8a8883ba9ddee6f6019e023ec9730020",
+      "method": "POST",
+      "path": "/open-apis/att/v1/admin/transactions/search",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "pageNumber": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 1
+              },
+              "pageSize": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 10
+              },
+              "startDate": {
+                "type": "string",
+                "format": "date"
+              },
+              "endDate": {
+                "type": "string",
+                "format": "date"
+              },
+              "deviceSn": {
+                "type": "string"
+              },
+              "employeeIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "departmentIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "pageNumber",
+              "pageSize",
+              "startDate",
+              "endDate"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "pageNumber": 1,
+        "pageSize": 10,
+        "startDate": "2025-10-01",
+        "endDate": "2025-10-31",
+        "deviceSn": "",
+        "employeeIds": [],
+        "departmentIds": []
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "pageNumber",
+            "required": true,
+            "kind": "int",
+            "description": "Page number for the data returned by the current request. Default value: 1. Data validation rules: ▪ Minimum value: 1.",
+            "depth": 0
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "kind": "int",
+            "description": "Page size, limits the number of data entries returned by the current request. Default value: 10. Data validation rules: ▪ Minimum value: 1. ▪ Maximum value: 100.",
+            "depth": 0
+          },
+          {
+            "name": "startDate",
+            "required": true,
+            "kind": "string",
+            "description": "Record start date. Note: ▪ Date format: yyyy-MM-dd , e.g., 2025-04-01 .",
+            "depth": 0
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "kind": "string",
+            "description": "Record end date. Note: ▪ Date format: yyyy-MM-dd , e.g., 2025-04-01 .",
+            "depth": 0
+          },
+          {
+            "name": "deviceSn",
+            "required": false,
+            "kind": "string",
+            "description": "Device serial number.",
+            "depth": 0
+          },
+          {
+            "name": "employeeIds",
+            "required": false,
+            "kind": "array",
+            "description": "List of employee IDs.",
+            "depth": 0
+          },
+          {
+            "name": "departmentIds",
+            "required": false,
+            "kind": "array",
+            "description": "List of department IDs.",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "query",
+      "updated_at": "2026-07-06T06:51:51.332783Z"
+    },
+    {
+      "id": "8a8883ba9ddee6f6019e024037cc0024",
+      "title": "Query Punch Event Information (Paginated)",
+      "sections": [
+        "Time Attendance",
+        "Punch Event"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883ba9ddee6f6019e02379fb20008/8a8883ba9ddee6f6019e024037cc0024",
+      "method": "POST",
+      "path": "/open-apis/att/v1/events/search",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "pageNumber": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 1
+              },
+              "pageSize": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 10
+              },
+              "startDateTime": {
+                "type": "string"
+              },
+              "endDateTime": {
+                "type": "string"
+              },
+              "deviceName": {
+                "type": "string"
+              },
+              "operator": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "pageNumber",
+              "pageSize",
+              "startDateTime",
+              "endDateTime"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "pageNumber": 1,
+        "pageSize": 10,
+        "startDateTime": "2025-10-01 00:00:00",
+        "endDateTime": "2025-10-31 23:59:59",
+        "deviceName": "Device",
+        "operator": ""
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "pageNumber",
+            "required": true,
+            "kind": "int",
+            "description": "Page number for the data returned by the current request. Default value: 1. Data validation rules: ▪ Minimum value: 1.",
+            "depth": 0
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "kind": "int",
+            "description": "Page size, limits the number of data entries returned by the current request. Default value: 10. Data validation rules: ▪ Minimum value: 1. ▪ Maximum value: 100.",
+            "depth": 0
+          },
+          {
+            "name": "startDateTime",
+            "required": true,
+            "kind": "string",
+            "description": "Record start date and time. Note: ▪ Date format: yyyy-MM-dd HH:mm:ss , e.g., 2025-04-01 00:00:00 .",
+            "depth": 0
+          },
+          {
+            "name": "endDateTime",
+            "required": true,
+            "kind": "string",
+            "description": "Record end date and time. Note: ▪ Date format: yyyy-MM-dd HH:mm:ss , e.g., 2025-04-01 23:59:59 .",
+            "depth": 0
+          },
+          {
+            "name": "deviceName",
+            "required": false,
+            "kind": "string",
+            "description": "Device name.",
+            "depth": 0
+          },
+          {
+            "name": "operator",
+            "required": false,
+            "kind": "string",
+            "description": "Operator (typically employee code).",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "query",
+      "updated_at": "2026-07-06T06:53:15.910258Z"
+    },
+    {
+      "id": "8a8883ba9ddee6f6019e0248fee60028",
+      "title": "Admin Manually Create Punch Record",
+      "sections": [
+        "Time Attendance",
+        "Punch Record"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883ba9ddee6f6019e02374cdd0004/8a8883ba9ddee6f6019e0248fee60028",
+      "method": "POST",
+      "path": "/open-apis/att/v1/admin/transactions",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "transactions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "employeeCode": {
+                      "type": "string"
+                    },
+                    "punchTime": {
+                      "type": "string"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "departmentName": {
+                      "type": "string"
+                    },
+                    "gpsLocation": {
+                      "type": "string"
+                    },
+                    "recordType": {
+                      "type": [
+                        "string",
+                        "integer"
+                      ]
+                    },
+                    "deviceSn": {
+                      "type": "string"
+                    },
+                    "deviceAlias": {
+                      "type": "string"
+                    },
+                    "longitude": {
+                      "type": "number"
+                    },
+                    "latitude": {
+                      "type": "number"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "employeeCode",
+                    "punchTime"
+                  ]
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "transactions"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ]
+      },
+      "example": {
+        "transactions": [
+          {
+            "employeeCode": "466006",
+            "punchTime": "2026-03-22 10:40:34",
+            "firstName": "yy",
+            "departmentName": "test1",
+            "gpsLocation": "",
+            "recordType": 0,
+            "deviceSn": "",
+            "deviceAlias": "",
+            "longitude": 0.0,
+            "latitude": 0.0
+          }
+        ]
+      },
+      "parameters": {
+        "path": [],
+        "query": [],
+        "body": [
+          {
+            "name": "transactions",
+            "required": true,
+            "kind": "list",
+            "description": "List of punch records.",
+            "depth": 0
+          },
+          {
+            "name": "employeeCode",
+            "required": true,
+            "kind": "string",
+            "description": "Employee code.",
+            "depth": 0
+          },
+          {
+            "name": "punchTime",
+            "required": true,
+            "kind": "string",
+            "description": "Punch time. Note: ▪ Date format: yyyy-MM-dd HH:mm:ss , e.g., 2025-04-01 18:00:00 .",
+            "depth": 0
+          },
+          {
+            "name": "firstName",
+            "required": false,
+            "kind": "string",
+            "description": "Employee first name.",
+            "depth": 0
+          },
+          {
+            "name": "departmentName",
+            "required": false,
+            "kind": "string",
+            "description": "Department name.",
+            "depth": 0
+          },
+          {
+            "name": "deviceSn",
+            "required": false,
+            "kind": "string",
+            "description": "Device serial number.",
+            "depth": 0
+          },
+          {
+            "name": "deviceAlias",
+            "required": false,
+            "kind": "string",
+            "description": "Device alias.",
+            "depth": 0
+          },
+          {
+            "name": "recordType",
+            "required": false,
+            "kind": "string",
+            "description": "Record type. Default value: 0 . 0 - Normal punch; 1 - Make-up punch.",
+            "depth": 0
+          },
+          {
+            "name": "longitude",
+            "required": false,
+            "kind": "float",
+            "description": "Longitude.",
+            "depth": 0
+          },
+          {
+            "name": "latitude",
+            "required": false,
+            "kind": "float",
+            "description": "Latitude.",
+            "depth": 0
+          },
+          {
+            "name": "gpsLocation",
+            "required": false,
+            "kind": "string",
+            "description": "GPS location address.",
+            "depth": 0
+          }
+        ]
+      },
+      "kind": "mutation",
+      "updated_at": "2026-07-06T06:58:24.597673Z"
+    }
+  ],
+  "guides": [
+    {
+      "id": "8a8882c39e33d040019e6e0a61c6002b",
+      "title": "Application Type Overview",
+      "sections": [
+        "Developer Guide",
+        "Platform Introduction"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8882c39e33d040019e6e090169001f/8a8882c39e33d040019e6e0a61c6002b"
+    },
+    {
+      "id": "8a8882c39e33d040019e6e0bcfc9002f",
+      "title": "Self-built Application Development Process",
+      "sections": [
+        "Developer Guide",
+        "Quick Start"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8882c39e33d040019e6e09748a0023/8a8882c39e33d040019e6e0bcfc9002f"
+    },
+    {
+      "id": "8a8882c39e33d040019e6e3df9a70033",
+      "title": "1. Create the Application",
+      "sections": [
+        "Developer Guide",
+        "User Manual"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8882c39e33d040019e6e0a04b60027/8a8882c39e33d040019e6e3df9a70033"
+    },
+    {
+      "id": "8a8882c39e33d040019e6e3e3e680036",
+      "title": "2. Application Configuration",
+      "sections": [
+        "Developer Guide",
+        "User Manual"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8882c39e33d040019e6e0a04b60027/8a8882c39e33d040019e6e3e3e680036"
+    },
+    {
+      "id": "8a8882c39e33d040019e6e3e81020039",
+      "title": "3. Release the Application",
+      "sections": [
+        "Developer Guide",
+        "User Manual"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8882c39e33d040019e6e0a04b60027/8a8882c39e33d040019e6e3e81020039"
+    },
+    {
+      "id": "8a8882c39e33d040019e6e3ec175003c",
+      "title": "4. Develop Application",
+      "sections": [
+        "Developer Guide",
+        "User Manual"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8882c39e33d040019e6e0a04b60027/8a8882c39e33d040019e6e3ec175003c"
+    },
+    {
+      "id": "8a8882c39e33d040019e6e3efbdd003f",
+      "title": "5. Operations and Monitoring",
+      "sections": [
+        "Developer Guide",
+        "User Manual"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8882c39e33d040019e6e0a04b60027/8a8882c39e33d040019e6e3efbdd003f"
+    },
+    {
+      "id": "8a8883949a54d914019a7ffa5b9a006a",
+      "title": "Process Overview",
+      "sections": [
+        "Server API",
+        "API Calling Guide",
+        "Calling Process"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff2e72f002e/8a8883949a54d914019a7ffa5b9a006a"
+    },
+    {
+      "id": "8a8883949a54d914019a7ffae1bc006d",
+      "title": "Apply for API permissions",
+      "sections": [
+        "Server API",
+        "API Calling Guide",
+        "Calling Process"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff2e72f002e/8a8883949a54d914019a7ffae1bc006d"
+    },
+    {
+      "id": "8a8883949a54d914019a7ffb2b3a0070",
+      "title": "Set up IP Whitelist",
+      "sections": [
+        "Server API",
+        "API Calling Guide",
+        "Calling Process"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff2e72f002e/8a8883949a54d914019a7ffb2b3a0070"
+    },
+    {
+      "id": "8a8883949a54d914019a7ffcef6c0073",
+      "title": "Obtain Access Token",
+      "sections": [
+        "Server API",
+        "API Calling Guide",
+        "Calling Process"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff2e72f002e/8a8883949a54d914019a7ffcef6c0073"
+    },
+    {
+      "id": "8a8883949a54d914019a7ffd44a60076",
+      "title": "Calling Specifications",
+      "sections": [
+        "Server API",
+        "API Calling Guide",
+        "Calling Specifications"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff32eca0032/8a8883949a54d914019a7ffd44a60076"
+    },
+    {
+      "id": "8a8883949a54d914019a7ffd7d8e0079",
+      "title": "Common Error Codes",
+      "sections": [
+        "Server API",
+        "API Calling Guide",
+        "Calling Specifications"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff32eca0032/8a8883949a54d914019a7ffd7d8e0079"
+    },
+    {
+      "id": "8a8883949a54d914019a7ffffd350082",
+      "title": "Step 1: Choose a Subscription Method",
+      "sections": [
+        "Server API",
+        "Events and Callbacks(example)",
+        "Subscription Process"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff3d856003a/8a8883949a54d914019a7ffffd350082"
+    },
+    {
+      "id": "8a8883949a54d914019a800044960085",
+      "title": "Step 2: Add Events",
+      "sections": [
+        "Server API",
+        "Events and Callbacks(example)",
+        "Subscription Process"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff3d856003a/8a8883949a54d914019a800044960085"
+    },
+    {
+      "id": "8a8883949a54d914019a80008aed0088",
+      "title": "Step 3: Receive Events",
+      "sections": [
+        "Server API",
+        "Events and Callbacks(example)",
+        "Subscription Process"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff3d856003a/8a8883949a54d914019a80008aed0088"
+    },
+    {
+      "id": "8a8883949a54d914019a8030d43000e2",
+      "title": "Push Access Control Events",
+      "sections": [
+        "Server API",
+        "Access Control",
+        "Events"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff69eb6005a/8a8883949a54d914019a8030d43000e2"
+    },
+    {
+      "id": "8a8883949a54d914019a8033b26500fa",
+      "title": "Push Time & Attendance Events",
+      "sections": [
+        "Server API",
+        "Time Attendance",
+        "Transactions"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff785090066/8a8883949a54d914019a8033b26500fa"
+    },
+    {
+      "id": "8a8883949a54d914019a8056e1d9010f",
+      "title": "Response Handling Example",
+      "sections": [
+        "Server API",
+        "Events and Callbacks(example)"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a8883949a54d914019a7ff086cf0016/8a8883949a54d914019a8056e1d9010f"
+    },
+    {
+      "id": "8a88857b9ca17652019cdc593110000f",
+      "title": "Event Overview",
+      "sections": [
+        "Server API",
+        "Events and Callbacks(example)",
+        "Event Subscription"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a88857b9ca17652019cdc58c35f000b/8a88857b9ca17652019cdc593110000f"
+    },
+    {
+      "id": "8a88857b9ca17652019cdc5988d20012",
+      "title": "Event List",
+      "sections": [
+        "Server API",
+        "Events and Callbacks(example)",
+        "Event Subscription"
+      ],
+      "source": "https://zlink-help.minervaiot.com/hc/articles/pc/8a88857b9ca17652019cdc58c35f000b/8a88857b9ca17652019cdc5988d20012"
+    }
+  ]
+}

@@ -4,7 +4,10 @@ Receptor de callbacks de ZKBio Zlink con FastAPI y una bandeja de eventos SQLite
 
 Incluye un [visor privado de eventos](docs/event-viewer.md) en `/events`, construido
 con React y Ant Design: búsqueda, filtros, paginación, actualización automática
-y detalle JSON. La raíz redirige a ese visor.
+y detalle JSON. La raíz abre el dashboard `/dashboard`. También incluye
+administración de usuarios en `/users` y la [consola de API](docs/api-console.md)
+en `/integration`, con las 31 operaciones y 21 guías de la documentación oficial.
+La interfaz completa admite español e inglés con i18next.
 
 ## Desarrollo
 

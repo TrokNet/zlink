@@ -16,6 +16,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from pydantic import BaseModel, Field
 
 from app.callbacks import connect_database
+from app.accounts import (authenticate, hash_password, password_matches, public_user,
+    require_user, require_permission, router as accounts_router)
 
 COOKIE = "zlink_viewer"
 SESSION_SECONDS = 8 * 60 * 60
@@ -34,50 +36,11 @@ class ViewerSettings:
                    os.getenv("ZLINK_VIEWER_SESSION_SECRET", ""))
 
 
-def hash_password(password: str) -> str:
-    salt = secrets.token_hex(16)
-    digest = hashlib.pbkdf2_hmac("sha256", password.encode(), bytes.fromhex(salt), 600_000)
-    return f"600000${salt}${digest.hex()}"
-
-
-def password_matches(password: str, encoded: str) -> bool:
-    try:
-        iterations, salt, digest = encoded.split("$")
-        actual = hashlib.pbkdf2_hmac("sha256", password.encode(), bytes.fromhex(salt), int(iterations))
-        return hmac.compare_digest(actual.hex(), digest)
-    except (ValueError, TypeError):
-        return False
-
-
 def config(request: Request) -> ViewerSettings:
     result = request.app.state.viewer_settings
     if not result.password_hash or len(result.session_secret) < 32:
         raise HTTPException(503, "El acceso al visor todavía no está configurado")
     return result
-
-
-def session_token(settings: ViewerSettings) -> str:
-    payload = base64.urlsafe_b64encode(json.dumps({
-        "user": settings.username, "expires": int(time.time()) + SESSION_SECONDS,
-        "nonce": secrets.token_hex(16),
-    }).encode()).decode()
-    signature = hmac.new(settings.session_secret.encode(), payload.encode(), "sha256").hexdigest()
-    return f"{payload}.{signature}"
-
-
-def require_session(request: Request) -> str:
-    settings = config(request)
-    try:
-        payload, signature = request.cookies.get(COOKIE, "").split(".")
-        expected = hmac.new(settings.session_secret.encode(), payload.encode(), "sha256").hexdigest()
-        if not hmac.compare_digest(signature, expected):
-            raise ValueError()
-        session = json.loads(base64.urlsafe_b64decode(payload))
-        if session["user"] != settings.username or session["expires"] <= time.time():
-            raise ValueError()
-        return settings.username
-    except (ValueError, KeyError, TypeError):
-        raise HTTPException(401, "Inicia sesión para consultar los eventos") from None
 
 
 def same_origin(request: Request):
@@ -113,19 +76,17 @@ def login(data: Login, request: Request, response: Response):
         if len(_attempts) >= 4096 and address not in _attempts:
             raise HTTPException(429, "Espera unos minutos antes de volver a intentar")
         _attempts[address] = (count + 1, started)
-    valid = password_matches(data.password, settings.password_hash)
-    if not (hmac.compare_digest(data.username.encode(), settings.username.encode()) and valid):
-        raise HTTPException(401, "Usuario o contraseña incorrectos")
+    user, token = authenticate(request, data.username.lower(), data.password)
     with _lock:
         _attempts.pop(address, None)
-    response.set_cookie(COOKIE, session_token(settings), max_age=SESSION_SECONDS,
+    response.set_cookie(COOKIE, token, max_age=SESSION_SECONDS,
                         secure=True, httponly=True, samesite="strict", path="/api")
-    return {"username": settings.username}
+    return user
 
 
 @router.get("/session")
-def session(username: str = Depends(require_session)):
-    return {"username": username}
+def session(user = Depends(require_user)):
+    return public_user(user)
 
 
 @router.post("/logout")
@@ -142,7 +103,7 @@ def date_value(value: datetime | None) -> str | None:
     return value.astimezone(timezone.utc).isoformat()
 
 
-@router.get("/events", dependencies=[Depends(require_session)])
+@router.get("/events", dependencies=[Depends(require_permission("events.read"))])
 def list_events(
     request: Request,
     q: str = Query(default="", max_length=200),
@@ -184,7 +145,7 @@ def list_events(
     ]}
 
 
-@router.get("/events-summary", dependencies=[Depends(require_session)])
+@router.get("/events-summary", dependencies=[Depends(require_permission("events.read"))])
 def event_summary(request: Request):
     lima = timezone(timedelta(hours=-5))
     midnight = datetime.now(lima).replace(hour=0, minute=0, second=0, microsecond=0).astimezone(timezone.utc).isoformat()
@@ -198,7 +159,7 @@ def event_summary(request: Request):
             "event_codes": [{"code": code, "count": count} for code, count in codes]}
 
 
-@router.get("/events/{request_id}", dependencies=[Depends(require_session)])
+@router.get("/events/{request_id}", dependencies=[Depends(require_permission("events.read"))])
 def event_detail(request_id: str, request: Request):
     with connect_database(request.app.state.settings) as db:
         row = db.execute(
@@ -207,3 +168,6 @@ def event_detail(request_id: str, request: Request):
     if not row:
         raise HTTPException(404, "Evento no encontrado")
     return dict(request_id=row[0], event_code=row[1], received_at=row[2], payload=json.loads(row[3]))
+
+
+router.include_router(accounts_router)

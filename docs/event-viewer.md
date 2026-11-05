@@ -4,7 +4,7 @@ React y Ant Design proporcionan tabla, filtros y panel lateral.
 `@uiw/react-json-view` muestra el árbol JSON de solo lectura. IBM Plex Sans se
 distribuye con la aplicación, sin solicitar fuentes a terceros.
 
-Dirección: `https://zlink.trok.dev/events`. La raíz redirige al visor.
+Dirección: `https://zlink.trok.dev/events`. La raíz redirige al dashboard.
 El webhook continúa en `/webhooks/zlink`.
 
 Diseño: navegación azul marino (#102c42), fondo gris claro (#f3f6f9), superficies
@@ -24,14 +24,17 @@ Generar el hash sin dejar la contraseña en el historial:
 .venv/bin/python -c 'from getpass import getpass; from app.viewer import hash_password; print(hash_password(getpass("Contraseña del visor: ")))'
 ```
 
-El visor tiene contraseña propia: PBKDF2-SHA256, 600.000 iteraciones. Usa cookie
-firmada, Secure, HttpOnly, SameSite=Strict y duración de ocho horas. Consultas con
+El visor usa cuentas persistentes con SQLAlchemy y hashes Argon2 con pwdlib.
+La cuenta inicial se importa del entorno; los hashes PBKDF2 anteriores se
+actualizan al iniciar sesión. Usa cookie itsdangerous firmada, Secure, HttpOnly,
+SameSite=Strict y duración de ocho horas. Consultas con
 `Cache-Control: no-store`. La cookie requiere HTTPS, también durante desarrollo.
 El receptor de callbacks conserva su autenticación independiente.
 
 Límite: cinco intentos fallidos por IP en cinco minutos, en memoria del proceso.
-Para múltiples réplicas se necesita un almacén compartido. No hay roles ni
-administración multiusuario. Cerrar sesión elimina la cookie; rotar el secreto
+Para múltiples réplicas se necesita un almacén compartido para el límite.
+Administración de usuarios y permisos en `/users`; consultar `api-console.md`.
+Cerrar sesión elimina la cookie; rotar el secreto
 invalida todas las sesiones. Las credenciales no se guardan en el navegador.
 
 ## Compilación
