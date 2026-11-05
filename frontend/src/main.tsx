@@ -711,7 +711,7 @@ function EventsApp() {
               rowKey="request_id"
               columns={columns}
               dataSource={data.items}
-              loading={busy}
+              loading={busy && !updated}
               scroll={{ x: 1020 }}
               pagination={{
                 current: page,
