@@ -7,10 +7,12 @@ import {
   Form,
   Input,
   Modal,
+  Popconfirm,
   Select,
   Space,
   Switch,
   Table,
+  Tabs,
   Tag,
 } from "antd";
 import { PlusOutlined, EditOutlined, TeamOutlined } from "@ant-design/icons";
@@ -20,11 +22,25 @@ export type Account = {
   id: number;
   username: string;
   display_name: string;
-  role: "admin" | "reader" | "custom";
+  role: string;
   permissions: string[];
   active: boolean;
   created_at: string;
 };
+type AccessProfile = {
+  id: string;
+  name: string;
+  permissions: string[];
+  is_system: boolean;
+  users_count: number;
+  created_at: string;
+};
+const permissionCodes = [
+  "events.read",
+  "users.manage",
+  "api.read",
+  "api.write",
+];
 export function UserManagement({
   account,
   onExpired,
@@ -33,9 +49,10 @@ export function UserManagement({
   onExpired: () => void;
 }) {
   const { t } = useTranslation(),
-    { message } = App.useApp();
+    { message, modal } = App.useApp();
   const [form] = Form.useForm();
   const [rows, setRows] = useState<Account[]>([]),
+    [profiles, setProfiles] = useState<AccessProfile[]>([]),
     [total, setTotal] = useState(0),
     [page, setPage] = useState(1),
     [busy, setBusy] = useState(false),
@@ -45,15 +62,25 @@ export function UserManagement({
     [editing, setEditing] = useState<Account | null>(null),
     [saving, setSaving] = useState(false),
     [saveError, setSaveError] = useState("");
+  const [section, setSection] = useState("users"),
+    [profileOpen, setProfileOpen] = useState(false),
+    [profileEditing, setProfileEditing] = useState<AccessProfile | null>(null),
+    [profileSaving, setProfileSaving] = useState(false),
+    [profileError, setProfileError] = useState("");
+  const [profileForm] = Form.useForm();
   const role = Form.useWatch("role", form);
   useEffect(() => {
     let active = true;
     setBusy(true);
-    api<{ items: Account[]; total: number }>(`/users?page=${page}`)
-      .then((r) => {
+    Promise.all([
+      api<{ items: Account[]; total: number }>(`/users?page=${page}`),
+      api<{ items: AccessProfile[] }>("/users/profiles"),
+    ])
+      .then(([r, profileResult]) => {
         if (active) {
           setRows(r.items);
           setTotal(r.total);
+          setProfiles(profileResult.items);
           setError("");
         }
       })
@@ -78,6 +105,17 @@ export function UserManagement({
         : { role: "reader", permissions: ["events.read"], active: true },
     );
     setOpen(true);
+  }
+  function editProfile(profile: AccessProfile | null) {
+    setProfileEditing(profile);
+    setProfileError("");
+    profileForm.resetFields();
+    profileForm.setFieldsValue(
+      profile
+        ? { name: profile.name, permissions: profile.permissions }
+        : { name: "", permissions: ["events.read"] },
+    );
+    setProfileOpen(true);
   }
   async function save() {
     let values;
@@ -104,6 +142,65 @@ export function UserManagement({
       setSaving(false);
     }
   }
+  async function persistProfile(values: {
+    name: string;
+    permissions: string[];
+  }) {
+    setProfileSaving(true);
+    setProfileError("");
+    try {
+      await api(
+        profileEditing
+          ? `/users/profiles/${profileEditing.id}`
+          : "/users/profiles",
+        {
+          method: profileEditing ? "PUT" : "POST",
+          body: JSON.stringify(values),
+        },
+      );
+      setProfileOpen(false);
+      setTick((x) => x + 1);
+      message.success(
+        t(profileEditing ? "profiles.updated" : "profiles.created"),
+      );
+    } catch (e) {
+      setProfileError(errorKey(e));
+    } finally {
+      setProfileSaving(false);
+    }
+  }
+  async function saveProfile() {
+    let values: { name: string; permissions: string[] };
+    try {
+      values = await profileForm.validateFields();
+    } catch {
+      return;
+    }
+    const permissionsChanged =
+      profileEditing &&
+      [...profileEditing.permissions].sort().join(",") !==
+        [...values.permissions].sort().join(",");
+    if (permissionsChanged && profileEditing.users_count > 0) {
+      modal.confirm({
+        title: t("profiles.confirmTitle"),
+        content: t("profiles.confirmBody", {
+          count: profileEditing.users_count,
+        }),
+        okText: t("users.save"),
+        cancelText: t("common.cancel"),
+        okButtonProps: { danger: true },
+        onOk: () => persistProfile(values),
+      });
+      return;
+    }
+    await persistProfile(values);
+  }
+  function profileLabel(roleId: string) {
+    const profile = profiles.find((item) => item.id === roleId);
+    return profile?.is_system
+      ? t(`roles.${roleId}`)
+      : (profile?.name ?? t(`roles.${roleId}`));
+  }
   if (!account.permissions.includes("users.manage"))
     return <Alert type="warning" title={t("errors.forbidden")} />;
   return (
@@ -119,62 +216,168 @@ export function UserManagement({
         <Button
           type="primary"
           icon={<PlusOutlined />}
-          onClick={() => edit(null)}
+          onClick={() => (section === "users" ? edit(null) : editProfile(null))}
         >
-          {t("users.create")}
+          {t(section === "users" ? "users.create" : "profiles.create")}
         </Button>
       </div>
+      <Tabs
+        activeKey={section}
+        onChange={setSection}
+        items={[
+          { key: "users", label: t("users.tabAccounts"), children: null },
+          { key: "profiles", label: t("users.tabProfiles"), children: null },
+        ]}
+      />
       {error && <Alert type="error" title={t(error)} className="data-error" />}
-      <section className="event-panel">
-        <Table<Account>
-          rowKey="id"
-          dataSource={rows}
-          loading={busy}
-          scroll={{ x: 700 }}
-          pagination={{ current: page, total, pageSize: 20, onChange: setPage }}
-          columns={[
-            { title: t("login.username"), dataIndex: "username" },
-            { title: t("users.name"), dataIndex: "display_name" },
-            {
-              title: t("users.role"),
-              dataIndex: "role",
-              render: (value) => (
-                <Tag color={value === "admin" ? "blue" : "default"}>
-                  {t("roles." + value)}
-                </Tag>
-              ),
-            },
-            {
-              title: t("users.permissions"),
-              dataIndex: "permissions",
-              render: (values: string[]) => (
-                <Space wrap>
-                  {values.map((value) => (
-                    <Tag key={value}>{t("permissions." + value)}</Tag>
-                  ))}
-                </Space>
-              ),
-            },
-            {
-              title: t("table.status"),
-              dataIndex: "active",
-              render: (value) => (
-                <Tag color={value ? "success" : "default"}>
-                  {t(value ? "users.active" : "users.inactive")}
-                </Tag>
-              ),
-            },
-            {
-              title: "",
-              render: (_, row) => (
-                <Button icon={<EditOutlined />} onClick={() => edit(row)}>
-                  {t("users.edit")}
-                </Button>
-              ),
-            },
-          ]}
-        />
-      </section>
+      {section === "users" ? (
+        <section className="event-panel">
+          <Table<Account>
+            rowKey="id"
+            dataSource={rows}
+            loading={busy}
+            scroll={{ x: 700 }}
+            pagination={{
+              current: page,
+              total,
+              pageSize: 20,
+              onChange: setPage,
+            }}
+            columns={[
+              { title: t("login.username"), dataIndex: "username" },
+              { title: t("users.name"), dataIndex: "display_name" },
+              {
+                title: t("users.role"),
+                dataIndex: "role",
+                render: (value) => (
+                  <Tag color={value === "admin" ? "blue" : "default"}>
+                    {profileLabel(value)}
+                  </Tag>
+                ),
+              },
+              {
+                title: t("users.permissions"),
+                dataIndex: "permissions",
+                render: (values: string[]) => (
+                  <Space wrap>
+                    {values.map((value) => (
+                      <Tag key={value}>{t("permissions." + value)}</Tag>
+                    ))}
+                  </Space>
+                ),
+              },
+              {
+                title: t("table.status"),
+                dataIndex: "active",
+                render: (value) => (
+                  <Tag color={value ? "success" : "default"}>
+                    {t(value ? "users.active" : "users.inactive")}
+                  </Tag>
+                ),
+              },
+              {
+                title: "",
+                render: (_, row) => (
+                  <Button icon={<EditOutlined />} onClick={() => edit(row)}>
+                    {t("users.edit")}
+                  </Button>
+                ),
+              },
+            ]}
+          />
+        </section>
+      ) : (
+        <section className="event-panel">
+          <Table<AccessProfile>
+            rowKey="id"
+            dataSource={profiles}
+            loading={busy}
+            scroll={{ x: 700 }}
+            pagination={{ pageSize: 20 }}
+            columns={[
+              {
+                title: t("profiles.name"),
+                dataIndex: "name",
+                render: (value: string, profile) => (
+                  <Space wrap>
+                    <strong>
+                      {profile.is_system ? t(`roles.${profile.id}`) : value}
+                    </strong>
+                    {profile.is_system && <Tag>{t("profiles.system")}</Tag>}
+                  </Space>
+                ),
+              },
+              {
+                title: t("users.permissions"),
+                dataIndex: "permissions",
+                render: (values: string[]) => (
+                  <Space wrap>
+                    {values.length ? (
+                      values.map((value) => (
+                        <Tag key={value}>{t("permissions." + value)}</Tag>
+                      ))
+                    ) : (
+                      <span>{t("profiles.noPermissions")}</span>
+                    )}
+                  </Space>
+                ),
+              },
+              {
+                title: t("profiles.assignedUsers"),
+                dataIndex: "users_count",
+                width: 130,
+              },
+              {
+                title: "",
+                render: (_, profile) =>
+                  profile.is_system ? null : (
+                    <Space>
+                      <Button
+                        icon={<EditOutlined />}
+                        onClick={() => editProfile(profile)}
+                      >
+                        {t("users.edit")}
+                      </Button>
+                      <Popconfirm
+                        title={t("profiles.deleteTitle")}
+                        description={t("profiles.deleteConfirm", {
+                          name: profile.name,
+                        })}
+                        okText={t("profiles.delete")}
+                        cancelText={t("common.cancel")}
+                        okButtonProps={{ danger: true }}
+                        disabled={profile.users_count > 0}
+                        onConfirm={async () => {
+                          try {
+                            await api(`/users/profiles/${profile.id}`, {
+                              method: "DELETE",
+                            });
+                            setTick((x) => x + 1);
+                            message.success(t("profiles.deleted"));
+                          } catch (e) {
+                            setError(errorKey(e));
+                          }
+                        }}
+                      >
+                        <Button
+                          danger
+                          disabled={profile.users_count > 0}
+                          title={
+                            profile.users_count > 0
+                              ? t("profiles.inUse")
+                              : undefined
+                          }
+                        >
+                          {t("profiles.delete")}
+                        </Button>
+                      </Popconfirm>
+                    </Space>
+                  ),
+              },
+            ]}
+          />
+        </section>
+      )}
       <Modal
         open={open}
         title={t(editing ? "users.edit" : "users.create")}
@@ -244,18 +447,17 @@ export function UserManagement({
           >
             <Select
               disabled={editing?.id === account.id}
-              options={["reader", "admin", "custom"].map((value) => ({
-                value,
-                label: t("roles." + value),
+              options={profiles.map((profile) => ({
+                value: profile.id,
+                label: profile.is_system
+                  ? t(`roles.${profile.id}`)
+                  : profile.name,
               }))}
               onChange={(value) =>
                 form.setFieldValue(
                   "permissions",
-                  value === "admin"
-                    ? ["events.read", "users.manage", "api.read", "api.write"]
-                    : value === "reader"
-                      ? ["events.read"]
-                      : [],
+                  profiles.find((profile) => profile.id === value)
+                    ?.permissions ?? [],
                 )
               }
             />
@@ -263,16 +465,15 @@ export function UserManagement({
           <Form.Item
             name="permissions"
             label={t("users.permissions")}
-            extra={t("users.permissionHint")}
+            extra={t(
+              role === "custom"
+                ? "users.permissionHintCustom"
+                : "users.permissionHintProfile",
+            )}
           >
             <Checkbox.Group
               disabled={role !== "custom"}
-              options={[
-                "events.read",
-                "users.manage",
-                "api.read",
-                "api.write",
-              ].map((value) => ({
+              options={permissionCodes.map((value) => ({
                 value,
                 label: t("permissions." + value),
               }))}
@@ -287,6 +488,66 @@ export function UserManagement({
               <Switch disabled={editing.id === account.id} />
             </Form.Item>
           )}
+        </Form>
+      </Modal>
+      <Modal
+        open={profileOpen}
+        title={t(profileEditing ? "profiles.edit" : "profiles.create")}
+        onCancel={() => setProfileOpen(false)}
+        onOk={saveProfile}
+        okText={t("users.save")}
+        cancelText={t("common.cancel")}
+        confirmLoading={profileSaving}
+        destroyOnHidden
+      >
+        <Form
+          form={profileForm}
+          layout="vertical"
+          requiredMark={false}
+          preserve={false}
+        >
+          {profileError && (
+            <Alert
+              type="error"
+              showIcon
+              title={t(profileError)}
+              className="form-alert"
+            />
+          )}
+          {profileEditing && (
+            <Alert
+              type="info"
+              showIcon
+              title={t("profiles.editWarning")}
+              className="form-alert"
+            />
+          )}
+          <Form.Item
+            name="name"
+            label={t("profiles.name")}
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                message: t("profiles.nameRequired"),
+              },
+              { max: 80, message: t("profiles.nameRule") },
+            ]}
+          >
+            <Input maxLength={80} />
+          </Form.Item>
+          <Form.Item
+            name="permissions"
+            label={t("users.permissions")}
+            extra={t("profiles.permissionsHint")}
+          >
+            <Checkbox.Group
+              options={permissionCodes.map((value) => ({
+                value,
+                label: t("permissions." + value),
+              }))}
+            />
+          </Form.Item>
         </Form>
       </Modal>
     </>

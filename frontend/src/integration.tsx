@@ -74,6 +74,7 @@ function NumericInput(props: WidgetProps) {
 function Base64Image(props: WidgetProps) {
   const { t } = useTranslation(),
     { message } = App.useApp();
+  const includeMimeType = props.options?.includeMimeType === true;
   return (
     <div>
       <Upload
@@ -86,8 +87,10 @@ function Base64Image(props: WidgetProps) {
             return false;
           }
           const reader = new FileReader();
-          reader.onload = () =>
-            props.onChange(String(reader.result).split(",")[1]);
+          reader.onload = () => {
+            const dataUrl = String(reader.result);
+            props.onChange(includeMimeType ? dataUrl : dataUrl.split(",")[1]);
+          };
           reader.readAsDataURL(file);
           return false;
         }}
@@ -100,10 +103,57 @@ function Base64Image(props: WidgetProps) {
         value={String(props.value || "")}
         rows={3}
         onChange={(event) => props.onChange(event.target.value || undefined)}
-        placeholder={t("api.base64")}
+        placeholder={t(includeMimeType ? "api.base64WithMime" : "api.base64")}
       />
+      {includeMimeType && (
+        <Typography.Text type="secondary">
+          {t("api.imageMimeHint")}
+        </Typography.Text>
+      )}
     </div>
   );
+}
+
+function imageDataUrl(value: string): string | null {
+  const compact = value.trim().replace(/\s+/g, "");
+  if (/^data:image\/[a-z0-9.+-]+;base64,/i.test(compact)) return compact;
+  const mimeType = compact.startsWith("/9j/")
+    ? "image/jpeg"
+    : compact.startsWith("iVBOR")
+      ? "image/png"
+      : compact.startsWith("R0lGOD")
+        ? "image/gif"
+        : compact.startsWith("UklGR")
+          ? "image/webp"
+          : null;
+  return mimeType ? `data:${mimeType};base64,${compact}` : null;
+}
+
+function normalizeImageInput(
+  operation: Operation,
+  data: Record<string, unknown>,
+): Record<string, unknown> | null {
+  const registrationPath = "/open-apis/cms/v1/credentials/visibleLightFace";
+  const detectionPath = `${registrationPath}/detect`;
+  if (operation.path !== registrationPath && operation.path !== detectionPath)
+    return data;
+  const field = operation.path === registrationPath ? "content" : "bioPhoto";
+  if (!data.body || typeof data.body !== "object" || Array.isArray(data.body))
+    return data;
+  const body = data.body as Record<string, unknown>;
+  if (typeof body[field] !== "string") return data;
+  const value = body[field] as string;
+  if (operation.path === registrationPath) {
+    const normalized = imageDataUrl(value);
+    return normalized
+      ? { ...data, body: { ...body, [field]: normalized } }
+      : null;
+  }
+  const normalized = value
+    .trim()
+    .replace(/^data:image\/[a-z0-9.+-]+;base64,/i, "")
+    .replace(/\s+/g, "");
+  return { ...data, body: { ...body, [field]: normalized } };
 }
 
 export function Integration({
@@ -177,7 +227,7 @@ export function Integration({
       out.items = localizeSchema(input.items);
     return out;
   }
-  function makeUi(schema: RJSFSchema): UiSchema {
+  function makeUi(schema: RJSFSchema, includeMimeType = false): UiSchema {
     const ui: UiSchema = { "ui:submitButtonOptions": { norender: true } };
     for (const [key, value] of Object.entries(schema.properties || {})) {
       if (typeof value === "object") {
@@ -185,14 +235,17 @@ export function Integration({
         if (value.type === "integer" || value.type === "number")
           ui[key] = { "ui:widget": "numberInput" };
         if (["content", "bioPhoto"].includes(key))
-          ui[key] = { "ui:widget": "base64" };
+          ui[key] = {
+            "ui:widget": "base64",
+            "ui:options": { includeMimeType },
+          };
         if (
           value.type === "array" &&
           value.items &&
           typeof value.items === "object" &&
           !Array.isArray(value.items)
         )
-          ui[key].items = makeUi(value.items);
+          ui[key].items = makeUi(value.items, includeMimeType);
       }
     }
     return ui;
@@ -212,6 +265,11 @@ export function Integration({
   }
   async function execute(data: Record<string, unknown>, confirmed = false) {
     if (!operation) return;
+    const normalizedData = normalizeImageInput(operation, data);
+    if (!normalizedData) {
+      setError("api.imageMimeRequired");
+      return;
+    }
     if (operation.kind === "mutation" && !confirmed) {
       modal.confirm({
         title: t("api.confirmTitle"),
@@ -219,7 +277,7 @@ export function Integration({
         okText: t("api.confirmExecute"),
         cancelText: t("common.cancel"),
         okButtonProps: { danger: true },
-        onOk: () => execute(data, true),
+        onOk: () => execute(normalizedData, true),
       });
       return;
     }
@@ -229,7 +287,7 @@ export function Integration({
     try {
       const r = await api<Result>(`/integration/execute/${operation.id}`, {
         method: "POST",
-        body: JSON.stringify({ inputs: data, confirmed }),
+        body: JSON.stringify({ inputs: normalizedData, confirmed }),
       });
       setResult(r);
       await refreshHistory();
@@ -390,7 +448,11 @@ export function Integration({
                       <JsonForm
                         key={operation.id + "-" + language}
                         schema={localizeSchema(operation.schema)}
-                        uiSchema={makeUi(operation.schema)}
+                        uiSchema={makeUi(
+                          operation.schema,
+                          operation.path ===
+                            "/open-apis/cms/v1/credentials/visibleLightFace",
+                        )}
                         validator={validator}
                         widgets={{
                           base64: Base64Image,
