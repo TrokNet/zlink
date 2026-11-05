@@ -207,6 +207,12 @@ function EventsApp() {
     setLoginError("errors.session");
   }, []);
   useEffect(() => {
+    if (!user?.permissions.includes("events.read")) return;
+    const controller = new AbortController();
+    api<Summary>("/events-summary", {signal:controller.signal}).then(setSummary).catch(error=>{if(error.status===401)expire()});
+    return ()=>controller.abort();
+  }, [user,expire]);
+  useEffect(() => {
     if (
       !user ||
       !user.permissions.includes("events.read") ||
