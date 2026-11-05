@@ -17,6 +17,7 @@ import {
 } from "antd";
 import { PlusOutlined, EditOutlined, TeamOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate } from "react-router-dom";
 import { api, errorKey } from "./api";
 export type Account = {
   id: number;
@@ -48,6 +49,8 @@ export function UserManagement({
   account: Account;
   onExpired: () => void;
 }) {
+  const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useTranslation(),
     { message, modal } = App.useApp();
   const [form] = Form.useForm();
@@ -62,13 +65,18 @@ export function UserManagement({
     [editing, setEditing] = useState<Account | null>(null),
     [saving, setSaving] = useState(false),
     [saveError, setSaveError] = useState("");
-  const [section, setSection] = useState("users"),
+  const [section, setSection] = useState(
+      location.pathname === "/profiles" ? "profiles" : "users",
+    ),
     [profileOpen, setProfileOpen] = useState(false),
     [profileEditing, setProfileEditing] = useState<AccessProfile | null>(null),
     [profileSaving, setProfileSaving] = useState(false),
     [profileError, setProfileError] = useState("");
   const [profileForm] = Form.useForm();
   const role = Form.useWatch("role", form);
+  useEffect(() => {
+    setSection(location.pathname === "/profiles" ? "profiles" : "users");
+  }, [location.pathname]);
   useEffect(() => {
     let active = true;
     setBusy(true);
@@ -223,7 +231,10 @@ export function UserManagement({
       </div>
       <Tabs
         activeKey={section}
-        onChange={setSection}
+        onChange={(value) => {
+          setSection(value);
+          navigate(value === "profiles" ? "/profiles" : "/users");
+        }}
         items={[
           { key: "users", label: t("users.tabAccounts"), children: null },
           { key: "profiles", label: t("users.tabProfiles"), children: null },
@@ -444,14 +455,18 @@ export function UserManagement({
             name="role"
             label={t("users.role")}
             rules={[{ required: true }]}
+            extra={t("users.profileHint")}
           >
             <Select
               disabled={editing?.id === account.id}
               options={profiles.map((profile) => ({
                 value: profile.id,
-                label: profile.is_system
-                  ? t(`roles.${profile.id}`)
-                  : profile.name,
+                label:
+                  profile.id === "custom"
+                    ? t("users.individualPermissions")
+                    : profile.is_system
+                      ? t(`roles.${profile.id}`)
+                      : profile.name,
               }))}
               onChange={(value) =>
                 form.setFieldValue(

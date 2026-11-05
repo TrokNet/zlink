@@ -39,6 +39,7 @@ import {
   DashboardOutlined,
   TeamOutlined,
   ApiOutlined,
+  SafetyCertificateOutlined,
   ArrowRightOutlined,
   CheckCircleOutlined,
   CloudServerOutlined,
@@ -93,7 +94,11 @@ function LanguageSwitcher() {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage === "en" ? "en" : "es";
   return (
-    <div className="language-selector" role="group" aria-label={t("common.language")}>
+    <div
+      className="language-selector"
+      role="group"
+      aria-label={t("common.language")}
+    >
       <GlobalOutlined aria-hidden="true" />
       <Button
         size="small"
@@ -125,11 +130,13 @@ function EventsApp() {
   const view =
     location.pathname === "/integration"
       ? "integration"
-      : location.pathname === "/users"
-        ? "users"
-        : location.pathname === "/events"
-          ? "events"
-          : "dashboard";
+      : location.pathname === "/profiles"
+        ? "profiles"
+        : location.pathname === "/users"
+          ? "users"
+          : location.pathname === "/events"
+            ? "events"
+            : "dashboard";
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage === "en" ? "en" : "es";
   const size = (bytes: number) =>
@@ -222,9 +229,13 @@ function EventsApp() {
   useEffect(() => {
     if (!user?.permissions.includes("events.read")) return;
     const controller = new AbortController();
-    api<Summary>("/events-summary", {signal:controller.signal}).then(setSummary).catch(error=>{if(error.status===401)expire()});
-    return ()=>controller.abort();
-  }, [user,expire]);
+    api<Summary>("/events-summary", { signal: controller.signal })
+      .then(setSummary)
+      .catch((error) => {
+        if (error.status === 401) expire();
+      });
+    return () => controller.abort();
+  }, [user, expire]);
   useEffect(() => {
     if (
       !user ||
@@ -585,17 +596,30 @@ function EventsApp() {
             </a>
           )}
           {user.permissions.includes("users.manage") && (
-            <a
-              href="/users"
-              onClick={(e) => {
-                e.preventDefault();
-                navigate("/users");
-              }}
-              className={view === "users" ? "nav-active" : ""}
-            >
-              <TeamOutlined />
-              {t("nav.users")}
-            </a>
+            <>
+              <a
+                href="/users"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/users");
+                }}
+                className={view === "users" ? "nav-active" : ""}
+              >
+                <TeamOutlined />
+                {t("nav.users")}
+              </a>
+              <a
+                href="/profiles"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/profiles");
+                }}
+                className={view === "profiles" ? "nav-active" : ""}
+              >
+                <SafetyCertificateOutlined />
+                {t("nav.profiles")}
+              </a>
+            </>
           )}
           {user.permissions.some((value) =>
             ["api.read", "api.write"].includes(value),
@@ -639,9 +663,11 @@ function EventsApp() {
                   ? "nav.api"
                   : view === "users"
                     ? "nav.users"
-                    : view === "dashboard"
-                      ? "nav.dashboard"
-                      : "nav.events",
+                    : view === "profiles"
+                      ? "nav.profiles"
+                      : view === "dashboard"
+                        ? "nav.dashboard"
+                        : "nav.events",
               )}
             </strong>
           </span>
@@ -662,7 +688,10 @@ function EventsApp() {
                   ? [{ value: "events", label: t("nav.events") }]
                   : []),
                 ...(user.permissions.includes("users.manage")
-                  ? [{ value: "users", label: t("nav.users") }]
+                  ? [
+                      { value: "users", label: t("nav.users") },
+                      { value: "profiles", label: t("nav.profiles") },
+                    ]
                   : []),
               ]}
             />
@@ -682,7 +711,7 @@ function EventsApp() {
             <React.Suspense fallback={<Skeleton active />}>
               <Integration account={user} onExpired={expire} />
             </React.Suspense>
-          ) : view === "users" ? (
+          ) : view === "users" || view === "profiles" ? (
             <UserManagement account={user} onExpired={expire} />
           ) : (
             <>
@@ -1137,7 +1166,17 @@ function LocalizedApp() {
   dayjs.locale(language);
   useEffect(() => {
     document.documentElement.lang = language;
-    document.title = `ZLINK · ${t(pathname === "/users" ? "nav.users" : pathname === "/integration" ? "nav.api" : pathname === "/events" ? "nav.events" : "nav.dashboard")}`;
+    const page =
+      pathname === "/users"
+        ? "nav.users"
+        : pathname === "/profiles"
+          ? "nav.profiles"
+          : pathname === "/integration"
+            ? "nav.api"
+            : pathname === "/events"
+              ? "nav.events"
+              : "nav.dashboard";
+    document.title = `ZLINK · ${t(page)}`;
   }, [language, t, pathname]);
   return (
     <ConfigProvider

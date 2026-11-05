@@ -41,7 +41,7 @@ def create_app(settings: Settings | None = None, viewer_settings: ViewerSettings
     @application.middleware("http")
     async def private_responses(request, call_next):
         response = await call_next(request)
-        if request.url.path.startswith("/api/") or request.url.path in ("/", "/events", "/dashboard", "/users"):
+        if request.url.path.startswith("/api/") or request.url.path in ("/", "/events", "/dashboard", "/users", "/profiles"):
             response.headers["Cache-Control"] = "no-store"
             response.headers["X-Content-Type-Options"] = "nosniff"
             response.headers["X-Frame-Options"] = "DENY"
@@ -58,6 +58,7 @@ def create_app(settings: Settings | None = None, viewer_settings: ViewerSettings
     @application.get("/dashboard", include_in_schema=False)
     @application.get("/integration", include_in_schema=False)
     @application.get("/users", include_in_schema=False)
+    @application.get("/profiles", include_in_schema=False)
     @application.get("/events", include_in_schema=False)
     def events_page():
         if not (frontend / "index.html").is_file():
