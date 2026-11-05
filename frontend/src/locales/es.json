@@ -130,6 +130,7 @@
   "users.name": "Nombre",
   "users.role": "Perfil",
   "users.profileHint": "Selecciona un perfil de Perfiles para asignar sus permisos a este usuario.",
+  "users.selfProfileHint": "Por seguridad, no puedes cambiar tu propio perfil de acceso. Selecciona otro usuario para asignarle un perfil.",
   "users.individualPermissions": "Permisos individuales (solo este usuario)",
   "users.permissions": "Permisos",
   "users.active": "Activo",

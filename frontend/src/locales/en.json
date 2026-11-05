@@ -130,6 +130,7 @@
   "users.name": "Name",
   "users.role": "Access profile",
   "users.profileHint": "Select a profile from Profiles to assign its permissions to this user.",
+  "users.selfProfileHint": "For security, you cannot change your own access profile. Select another user to assign a profile.",
   "users.individualPermissions": "Individual permissions (this user only)",
   "users.permissions": "Permissions",
   "users.active": "Active",

@@ -347,7 +347,7 @@ export function UserManagement({
                         icon={<EditOutlined />}
                         onClick={() => editProfile(profile)}
                       >
-                        {t("users.edit")}
+                        {t("profiles.edit")}
                       </Button>
                       <Popconfirm
                         title={t("profiles.deleteTitle")}
@@ -455,7 +455,11 @@ export function UserManagement({
             name="role"
             label={t("users.role")}
             rules={[{ required: true }]}
-            extra={t("users.profileHint")}
+            extra={t(
+              editing?.id === account.id
+                ? "users.selfProfileHint"
+                : "users.profileHint",
+            )}
           >
             <Select
               disabled={editing?.id === account.id}
