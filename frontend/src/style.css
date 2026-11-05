@@ -8,6 +8,9 @@
 html[lang="hi"] body {
   font-family: "Noto Sans Devanagari", "Mangal", "IBM Plex Sans", sans-serif;
 }
+html[lang="zh"] body {
+  font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", "IBM Plex Sans", sans-serif;
+}
 .language-selector {
   display: inline-flex;
   align-items: center;

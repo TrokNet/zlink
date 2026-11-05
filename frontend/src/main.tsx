@@ -26,6 +26,7 @@ import type { TableColumnsType } from "antd";
 import esES from "antd/locale/es_ES";
 import enUS from "antd/locale/en_US";
 import hiIN from "antd/locale/hi_IN";
+import zhCN from "antd/locale/zh_CN";
 import { useTranslation } from "react-i18next";
 import "./i18n";
 import { api, errorKey } from "./api";
@@ -58,6 +59,7 @@ import JsonView from "@uiw/react-json-view";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import "dayjs/locale/hi";
+import "dayjs/locale/zh-cn";
 import "@fontsource/ibm-plex-sans/400.css";
 import "@fontsource/ibm-plex-sans/500.css";
 import "@fontsource/ibm-plex-sans/600.css";
@@ -132,6 +134,16 @@ function LanguageSwitcher() {
       >
         HI
       </Button>
+      <Button
+        size="small"
+        type={language === "zh" ? "primary" : "default"}
+        aria-label={t("common.chinese")}
+        aria-pressed={language === "zh"}
+        title={t("common.chinese")}
+        onClick={() => void i18n.changeLanguage("zh")}
+      >
+        ZH
+      </Button>
     </div>
   );
 }
@@ -152,7 +164,13 @@ function EventsApp() {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage || "es";
   const numberLocale =
-    language === "en" ? "en-US" : language === "hi" ? "hi-IN" : "es-PE";
+    language === "en"
+      ? "en-US"
+      : language === "hi"
+        ? "hi-IN"
+        : language === "zh"
+          ? "zh-CN"
+          : "es-PE";
   const size = (bytes: number) =>
     bytes < 1024
       ? `${bytes} B`
@@ -903,7 +921,9 @@ function EventsApp() {
                                 format={
                                   language === "en"
                                     ? "MM/DD/YYYY"
-                                    : "DD/MM/YYYY"
+                                    : language === "zh"
+                                      ? "YYYY/MM/DD"
+                                      : "DD/MM/YYYY"
                                 }
                                 onChange={(dates) => {
                                   setRange(
@@ -1177,7 +1197,9 @@ function LocalizedApp() {
   const { pathname } = useLocation();
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage || "es";
-  dayjs.locale(language === "hi" ? "hi" : language);
+  dayjs.locale(
+    language === "hi" ? "hi" : language === "zh" ? "zh-cn" : language,
+  );
   useEffect(() => {
     document.documentElement.lang = language;
     const page =
@@ -1194,7 +1216,15 @@ function LocalizedApp() {
   }, [language, t, pathname]);
   return (
     <ConfigProvider
-      locale={language === "en" ? enUS : language === "hi" ? hiIN : esES}
+      locale={
+        language === "en"
+          ? enUS
+          : language === "hi"
+            ? hiIN
+            : language === "zh"
+              ? zhCN
+              : esES
+      }
       theme={{
         token: {
           colorPrimary: "#136b9a",

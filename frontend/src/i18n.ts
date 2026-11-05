@@ -4,6 +4,7 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import es from "./locales/es.json";
 import en from "./locales/en.json";
 import hi from "./locales/hi.json";
+import zh from "./locales/zh.json";
 
 void i18n
   .use(LanguageDetector)
@@ -13,12 +14,14 @@ void i18n
       es: { translation: es },
       en: { translation: en },
       hi: { translation: hi },
+      zh: { translation: zh },
     },
-    supportedLngs: ["es", "en", "hi"],
+    supportedLngs: ["es", "en", "hi", "zh"],
     fallbackLng: {
       es: ["es"],
       en: ["en"],
       hi: ["en"],
+      zh: ["en"],
       default: ["es"],
     },
     load: "languageOnly",

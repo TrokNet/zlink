@@ -27,6 +27,7 @@ import { customizeValidator } from "@rjsf/validator-ajv8";
 import type { RJSFSchema, UiSchema, WidgetProps } from "@rjsf/utils";
 import localizeEs from "ajv-i18n/localize/es";
 import localizeHi from "./localizeHi";
+import localizeZh from "ajv-i18n/localize/zh";
 import JsonView from "@uiw/react-json-view";
 import { useTranslation } from "react-i18next";
 import { api, errorKey } from "./api";
@@ -300,7 +301,9 @@ export function Integration({
           ? localizeEs
           : language === "hi"
             ? localizeHi
-            : undefined,
+            : language === "zh"
+              ? localizeZh
+              : undefined,
       ),
     [language],
   );
@@ -774,7 +777,9 @@ export function Integration({
                                 ? "en-US"
                                 : language === "hi"
                                   ? "hi-IN"
-                                  : "es-PE",
+                                  : language === "zh"
+                                    ? "zh-CN"
+                                    : "es-PE",
                               {
                                 dateStyle: "short",
                                 timeStyle: "medium",
