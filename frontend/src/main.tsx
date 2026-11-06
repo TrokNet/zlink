@@ -94,6 +94,86 @@ const Logo = () => (
   </span>
 );
 
+type FlagCountry = "es" | "us" | "in" | "cn";
+
+function flagStar(cx: number, cy: number, radius: number) {
+  return Array.from({ length: 10 }, (_, index) => {
+    const angle = -Math.PI / 2 + (index * Math.PI) / 5;
+    const size = index % 2 === 0 ? radius : radius * 0.43;
+    return `${(cx + Math.cos(angle) * size).toFixed(2)},${(cy + Math.sin(angle) * size).toFixed(2)}`;
+  }).join(" ");
+}
+
+function LanguageFlag({ country }: { country: FlagCountry }) {
+  return (
+    <svg
+      className="language-flag"
+      viewBox="0 0 40 28"
+      role="img"
+      aria-hidden="true"
+      focusable="false"
+    >
+      {country === "es" && (
+        <>
+          <rect width="40" height="28" fill="#AA151B" />
+          <rect y="7" width="40" height="14" fill="#F1BF00" />
+        </>
+      )}
+      {country === "us" && (
+        <>
+          <rect width="40" height="28" fill="#fff" />
+          {Array.from({ length: 7 }, (_, index) => (
+            <rect key={index} y={index * 4} width="40" height="2" fill="#B22234" />
+          ))}
+          <rect width="17" height="15" fill="#3C3B6E" />
+          {Array.from({ length: 5 }, (_, row) =>
+            Array.from({ length: row % 2 ? 2 : 3 }, (_, column) => (
+              <circle
+                key={`${row}-${column}`}
+                cx={row % 2 ? 5 + column * 6 : 3 + column * 6}
+                cy={2 + row * 2.4}
+                r="0.65"
+                fill="#fff"
+              />
+            )),
+          )}
+        </>
+      )}
+      {country === "in" && (
+        <>
+          <rect width="40" height="9.34" fill="#FF9933" />
+          <rect y="9.33" width="40" height="9.34" fill="#fff" />
+          <rect y="18.66" width="40" height="9.34" fill="#138808" />
+          <circle cx="20" cy="14" r="3.4" fill="none" stroke="#000080" strokeWidth="0.8" />
+          {Array.from({ length: 12 }, (_, index) => (
+            <line
+              key={index}
+              x1="20"
+              y1="14"
+              x2="20"
+              y2="10.8"
+              transform={`rotate(${index * 30} 20 14)`}
+              stroke="#000080"
+              strokeWidth="0.45"
+            />
+          ))}
+          <circle cx="20" cy="14" r="0.65" fill="#000080" />
+        </>
+      )}
+      {country === "cn" && (
+        <>
+          <rect width="40" height="28" fill="#DE2910" />
+          <polygon points={flagStar(9, 8, 4)} fill="#FFDE00" />
+          <polygon points={flagStar(17, 4, 1.55)} fill="#FFDE00" />
+          <polygon points={flagStar(20, 7, 1.55)} fill="#FFDE00" />
+          <polygon points={flagStar(20, 11, 1.55)} fill="#FFDE00" />
+          <polygon points={flagStar(17, 14, 1.55)} fill="#FFDE00" />
+        </>
+      )}
+    </svg>
+  );
+}
+
 function LanguageSwitcher() {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage || "es";
@@ -112,9 +192,7 @@ function LanguageSwitcher() {
         title={t("common.spanish")}
         onClick={() => void i18n.changeLanguage("es")}
       >
-        <span aria-hidden="true" className="language-flag">
-          🇪🇸
-        </span>
+        <LanguageFlag country="es" />
       </Button>
       <Button
         size="small"
@@ -124,9 +202,7 @@ function LanguageSwitcher() {
         title={t("common.english")}
         onClick={() => void i18n.changeLanguage("en")}
       >
-        <span aria-hidden="true" className="language-flag">
-          🇺🇸
-        </span>
+        <LanguageFlag country="us" />
       </Button>
       <Button
         size="small"
@@ -136,9 +212,7 @@ function LanguageSwitcher() {
         title={t("common.hindi")}
         onClick={() => void i18n.changeLanguage("hi")}
       >
-        <span aria-hidden="true" className="language-flag">
-          🇮🇳
-        </span>
+        <LanguageFlag country="in" />
       </Button>
       <Button
         size="small"
@@ -148,9 +222,7 @@ function LanguageSwitcher() {
         title={t("common.chinese")}
         onClick={() => void i18n.changeLanguage("zh")}
       >
-        <span aria-hidden="true" className="language-flag">
-          🇨🇳
-        </span>
+        <LanguageFlag country="cn" />
       </Button>
     </div>
   );

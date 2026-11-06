@@ -23,8 +23,11 @@ html[lang="zh"] body {
 }
 .language-flag {
   display: block;
-  font-size: 18px;
-  line-height: 1;
+  width: 22px;
+  height: 16px;
+  flex: none;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgb(24 48 68 / 12%);
 }
 .dashboard-grid {
   display: grid;
