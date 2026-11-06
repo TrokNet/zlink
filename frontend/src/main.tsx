@@ -94,7 +94,7 @@ const Logo = () => (
   </span>
 );
 
-type FlagCountry = "es" | "us" | "in" | "cn";
+type FlagCountry = "pe" | "us" | "in" | "cn";
 
 function flagStar(cx: number, cy: number, radius: number) {
   return Array.from({ length: 10 }, (_, index) => {
@@ -113,10 +113,11 @@ function LanguageFlag({ country }: { country: FlagCountry }) {
       aria-hidden="true"
       focusable="false"
     >
-      {country === "es" && (
+      {country === "pe" && (
         <>
-          <rect width="40" height="28" fill="#AA151B" />
-          <rect y="7" width="40" height="14" fill="#F1BF00" />
+          <rect width="13.34" height="28" fill="#D91023" />
+          <rect x="13.33" width="13.34" height="28" fill="#fff" />
+          <rect x="26.66" width="13.34" height="28" fill="#D91023" />
         </>
       )}
       {country === "us" && (
@@ -192,7 +193,7 @@ function LanguageSwitcher() {
         title={t("common.spanish")}
         onClick={() => void i18n.changeLanguage("es")}
       >
-        <LanguageFlag country="es" />
+        <LanguageFlag country="pe" />
       </Button>
       <Button
         size="small"
