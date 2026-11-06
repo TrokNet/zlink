@@ -112,7 +112,9 @@ function LanguageSwitcher() {
         title={t("common.spanish")}
         onClick={() => void i18n.changeLanguage("es")}
       >
-        ES
+        <span aria-hidden="true" className="language-flag">
+          🇪🇸
+        </span>
       </Button>
       <Button
         size="small"
@@ -122,7 +124,9 @@ function LanguageSwitcher() {
         title={t("common.english")}
         onClick={() => void i18n.changeLanguage("en")}
       >
-        EN
+        <span aria-hidden="true" className="language-flag">
+          🇺🇸
+        </span>
       </Button>
       <Button
         size="small"
@@ -132,7 +136,9 @@ function LanguageSwitcher() {
         title={t("common.hindi")}
         onClick={() => void i18n.changeLanguage("hi")}
       >
-        HI
+        <span aria-hidden="true" className="language-flag">
+          🇮🇳
+        </span>
       </Button>
       <Button
         size="small"
@@ -142,7 +148,9 @@ function LanguageSwitcher() {
         title={t("common.chinese")}
         onClick={() => void i18n.changeLanguage("zh")}
       >
-        ZH
+        <span aria-hidden="true" className="language-flag">
+          🇨🇳
+        </span>
       </Button>
     </div>
   );

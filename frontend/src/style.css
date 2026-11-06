@@ -19,7 +19,12 @@ html[lang="zh"] body {
 }
 .language-selector .ant-btn {
   min-width: 38px;
-  padding-inline: 8px;
+  padding-inline: 6px;
+}
+.language-flag {
+  display: block;
+  font-size: 18px;
+  line-height: 1;
 }
 .dashboard-grid {
   display: grid;
